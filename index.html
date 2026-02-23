@@ -454,6 +454,42 @@
             transform: translateX(4px);
         }
 
+        .fav-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            z-index: 10;
+            color: var(--color-text);
+            transition: all 0.2s ease;
+        }
+
+        .fav-btn:hover {
+            transform: scale(1.1);
+            background-color: white;
+        }
+
+        .fav-btn.active {
+            color: #ef4444;
+            /* Rojo para favoritos */
+        }
+
+        .fav-btn.active svg {
+            fill: #ef4444;
+            stroke: #ef4444;
+        }
+
+
         /* === EMPTY STATE === */
         .empty-state {
             grid-column: 1 / -1;
@@ -870,7 +906,21 @@
                 <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo">
                 <div class="tagline">Model Showroom</div>
             </div>
-            <a href="mailto:sales@stoodio.ai?subject=Requesting%20a%20Model" class="btn-outline">Request a Model</a>
+            <div class="header-actions" style="display: flex; gap: 16px; align-items: center;">
+                <button id="favViewBtn" class="btn-outline"
+                    style="border-color: var(--color-text-meta); color: var(--color-text-meta);">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"
+                        style="margin-right: 6px; display: inline-block; vertical-align: text-bottom;">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
+                    </svg>
+                    Mis favoritos
+                </button>
+                <a href="mailto:sales@stoodio.ai?subject=Requesting%20a%20Model" class="btn-primary"
+                    style="padding: 10px 24px; font-weight: 600;">Request a Model</a>
+            </div>
         </div>
     </header>
 
@@ -987,8 +1037,21 @@
             </div>
 
             <div class="modal-right">
-                <h2 class="modal-name" id="modalName">Name</h2>
-                <div class="modal-id" id="modalId">ID</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2 class="modal-name" id="modalName">Name</h2>
+                        <div class="modal-id" id="modalId">ID</div>
+                    </div>
+                    <button class="fav-btn" id="modalFavBtn" aria-label="Toggle Favorite"
+                        style="position: static; margin-top: 8px;">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
 
                 <div class="info-grid">
                     <div class="info-label">Subject Type</div>
@@ -1044,6 +1107,8 @@
             searchQuery: "",
             typeFilters: [],    // Array vacío asume "All"
             licenseFilters: [], // Array vacío asume "All"
+            favorites: JSON.parse(localStorage.getItem('stoodio_favorites') || '[]'),
+            showFavoritesOnly: false,
             currentPage: 1,
             itemsPerPage: 12
         };
@@ -1061,6 +1126,8 @@
             // Filter
             const filtered = MODELS.filter(model => {
                 if (!model.isPublic) return false;
+
+                if (state.showFavoritesOnly && !state.favorites.includes(model.id)) return false;
 
                 // Search
                 const q = state.searchQuery.toLowerCase();
@@ -1106,9 +1173,15 @@
                 card.onclick = () => openModal(model);
 
                 let licBadgeText = model.license === "royalty-free" ? "Royalty Free" : "Available to License";
+                const isFav = state.favorites.includes(model.id);
 
                 card.innerHTML = `
                     <div class="card-image-wrap">
+                        <button class="fav-btn ${isFav ? 'active' : ''}" aria-label="Toggle Favorite" data-id="${model.id}">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
                         <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
                     </div>
                     <div class="card-info">
@@ -1128,6 +1201,13 @@
                         </div>
                     </div>
                 `;
+
+                const favBtn = card.querySelector('.fav-btn');
+                favBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(model.id);
+                };
+
                 gridEl.appendChild(card);
             });
 
@@ -1302,6 +1382,14 @@
 
             // Show modal
             modalOverlay.classList.add("active");
+
+            // Sync favorite state
+            const mFavBtn = document.getElementById("modalFavBtn");
+            if (state.favorites.includes(model.id)) {
+                mFavBtn.classList.add("active");
+            } else {
+                mFavBtn.classList.remove("active");
+            }
         }
 
         function closeModal() {
@@ -1324,6 +1412,56 @@
         document.getElementById("galleryNextBtn").addEventListener("click", () => {
             document.getElementById("modalGallery").scrollBy({ top: 120, behavior: 'smooth' });
         });
+
+        /* === FAVORITES LOGIC === */
+        function toggleFavorite(id) {
+            const index = state.favorites.indexOf(id);
+            if (index > -1) {
+                state.favorites.splice(index, 1);
+            } else {
+                state.favorites.push(id);
+            }
+            localStorage.setItem('stoodio_favorites', JSON.stringify(state.favorites));
+
+            // Sync UI
+            renderCards();
+
+            // Sincronizar modal open state si aplica
+            const modalIdEl = document.getElementById("modalId");
+            if (modalOverlay.classList.contains("active") && modalIdEl && modalIdEl.textContent === id) {
+                const mFavBtn = document.getElementById("modalFavBtn");
+                if (state.favorites.includes(id)) {
+                    mFavBtn.classList.add("active");
+                } else {
+                    mFavBtn.classList.remove("active");
+                }
+            }
+        }
+
+        document.getElementById("favViewBtn").addEventListener("click", (e) => {
+            state.showFavoritesOnly = !state.showFavoritesOnly;
+            state.currentPage = 1;
+
+            const btn = e.currentTarget;
+            if (state.showFavoritesOnly) {
+                btn.classList.remove("btn-outline");
+                btn.classList.add("btn-primary");
+                btn.style.borderColor = "";
+                btn.style.color = "";
+            } else {
+                btn.classList.add("btn-outline");
+                btn.classList.remove("btn-primary");
+                btn.style.borderColor = "var(--color-text-meta)";
+                btn.style.color = "var(--color-text-meta)";
+            }
+            renderCards();
+        });
+
+        // Initialize modal favorite click loop
+        document.getElementById("modalFavBtn").onclick = () => {
+            const currentId = document.getElementById("modalId").textContent;
+            toggleFavorite(currentId);
+        };
 
         // Initialize
         renderCards();
