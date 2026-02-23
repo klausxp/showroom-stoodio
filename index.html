@@ -125,6 +125,11 @@
             /* Increased logo size */
             width: auto;
             display: block;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: auto;
+            /* Fallback */
+            transform: translateZ(0);
+            /* Force Hardware Acceleration for sharper scaling */
         }
 
         .tagline {
@@ -388,7 +393,9 @@
         .card-info {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            /* Centra el botón respecto al texto */
+            padding-top: 4px;
         }
 
         .card-details {
@@ -396,6 +403,10 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            gap: 6px;
+            /* Define el espacio entre el nombre y los labels */
+            width: calc(100% - 48px);
+            /* Espacio reservado para el botón */
         }
 
         .model-name {
@@ -403,7 +414,8 @@
             font-size: 22px;
             font-weight: 600;
             color: var(--color-text);
-            margin-bottom: 2px;
+            margin-bottom: 0px;
+            /* El gap de card-details se encarga del espacio */
             letter-spacing: -0.02em;
             line-height: 1.1;
             white-space: nowrap;
@@ -855,7 +867,7 @@
     <header class="header">
         <div class="container header-content">
             <div class="logo-area">
-                <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo" width="200" height="48">
+                <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo">
                 <div class="tagline">Model Showroom</div>
             </div>
             <a href="mailto:sales@stoodio.ai?subject=Requesting%20a%20Model" class="btn-outline">Request a Model</a>
