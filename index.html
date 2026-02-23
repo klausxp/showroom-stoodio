@@ -755,6 +755,47 @@
             }
         }
 
+        /* === PAGINATION === */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 60px;
+            margin-bottom: 40px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--color-border);
+            background-color: transparent;
+            color: var(--color-text-light);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition-speed);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--color-text);
+            color: var(--color-text);
+        }
+
+        .page-btn.active {
+            background-color: var(--color-accent);
+            color: white;
+            border-color: var(--color-accent);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 900px) {
             #showroom-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -910,6 +951,11 @@
         <div id="showroom-grid">
             <!-- Cards will be populated here via JS -->
         </div>
+
+        <!-- Pagination controls -->
+        <div class="pagination" id="paginationControls">
+            <!-- Pagination buttons will be populated here via JS -->
+        </div>
     </main>
 
     <!-- === FOOTER === -->
@@ -1001,7 +1047,9 @@
         let state = {
             searchQuery: "",
             typeFilter: "all",
-            licenseFilter: "all"
+            licenseFilter: "all",
+            currentPage: 1,
+            itemsPerPage: 8
         };
 
         const gridEl = document.getElementById("showroom-grid");
@@ -1050,7 +1098,12 @@
                 return;
             }
 
-            filtered.forEach(model => {
+            // Pagination slice
+            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+            const endIndex = startIndex + state.itemsPerPage;
+            const paginatedItems = filtered.slice(startIndex, endIndex);
+
+            paginatedItems.forEach(model => {
                 const card = document.createElement("button");
                 card.className = "model-card";
                 card.setAttribute("aria-label", `View details for ${model.firstName} ${model.lastName}`);
@@ -1085,11 +1138,59 @@
                 `;
                 gridEl.appendChild(card);
             });
+
+            renderPagination(filtered.length);
+        }
+
+        function renderPagination(totalItems) {
+            const paginationEl = document.getElementById("paginationControls");
+            paginationEl.innerHTML = "";
+
+            const totalPages = Math.ceil(totalItems / state.itemsPerPage);
+            if (totalPages <= 1) return; // Ocultar si solo hay una página
+
+            // Prev Button
+            const prevBtn = document.createElement("button");
+            prevBtn.className = "page-btn";
+            prevBtn.innerHTML = `&larr;`;
+            prevBtn.disabled = state.currentPage === 1;
+            prevBtn.onclick = () => {
+                state.currentPage--;
+                renderCards();
+                window.scrollTo({ top: document.getElementById('showroom-grid').offsetTop - 120, behavior: 'smooth' });
+            };
+            paginationEl.appendChild(prevBtn);
+
+            // Page Numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement("button");
+                pageBtn.className = "page-btn" + (i === state.currentPage ? " active" : "");
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    state.currentPage = i;
+                    renderCards();
+                    window.scrollTo({ top: document.getElementById('showroom-grid').offsetTop - 120, behavior: 'smooth' });
+                };
+                paginationEl.appendChild(pageBtn);
+            }
+
+            // Next Button
+            const nextBtn = document.createElement("button");
+            nextBtn.className = "page-btn";
+            nextBtn.innerHTML = `&rarr;`;
+            nextBtn.disabled = state.currentPage === totalPages;
+            nextBtn.onclick = () => {
+                state.currentPage++;
+                renderCards();
+                window.scrollTo({ top: document.getElementById('showroom-grid').offsetTop - 120, behavior: 'smooth' });
+            };
+            paginationEl.appendChild(nextBtn);
         }
 
         /* === EVENTS === */
         searchInput.addEventListener("input", (e) => {
             state.searchQuery = e.target.value;
+            state.currentPage = 1; // Reset to page 1 on search
             renderCards();
         });
 
@@ -1098,6 +1199,7 @@
                 typeFilterBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
                 state.typeFilter = btn.dataset.filter;
+                state.currentPage = 1; // Reset to page 1 on filter change
                 renderCards();
             });
         });
@@ -1107,6 +1209,7 @@
                 licenseFilterBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
                 state.licenseFilter = btn.dataset.filter;
+                state.currentPage = 1; // Reset to page 1 on filter change
                 renderCards();
             });
         });
