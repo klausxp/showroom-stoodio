@@ -458,8 +458,8 @@
             position: absolute;
             top: 16px;
             right: 16px;
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
@@ -472,6 +472,23 @@
             z-index: 10;
             color: var(--color-text);
             transition: all 0.2s ease;
+        }
+
+        .header-nav-link {
+            background: none;
+            border: none;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 0;
+            color: var(--color-text-meta);
+            transition: color 0.2s ease;
+        }
+
+        .header-nav-link:hover,
+        .header-nav-link.active {
+            color: var(--color-text);
         }
 
         .fav-btn:hover {
@@ -902,24 +919,15 @@
     <!-- === HEADER === -->
     <header class="header">
         <div class="container header-content">
-            <div class="logo-area">
+            <button class="logo-area" id="logoLink" style="background:none; border:none; padding:0; cursor:pointer;">
                 <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo">
                 <div class="tagline">Model Showroom</div>
-            </div>
-            <div class="header-actions" style="display: flex; gap: 16px; align-items: center;">
-                <button id="favViewBtn" class="btn-outline"
-                    style="border-color: var(--color-text-meta); color: var(--color-text-meta);">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"
-                        style="margin-right: 6px; display: inline-block; vertical-align: text-bottom;">
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                        </path>
-                    </svg>
-                    Mis favoritos
-                </button>
+            </button>
+            <div class="header-actions" style="display: flex; gap: 24px; align-items: center;">
+                <button id="homeMenuBtn" class="header-nav-link active">Menú principal</button>
+                <button id="favViewBtn" class="header-nav-link">Mis favoritos</button>
                 <a href="mailto:sales@stoodio.ai?subject=Requesting%20a%20Model" class="btn-primary"
-                    style="padding: 10px 24px; font-weight: 600;">Request a Model</a>
+                    style="padding: 10px 24px; font-weight: 600; margin-left: 8px;">Request a Model</a>
             </div>
         </div>
     </header>
@@ -1044,7 +1052,7 @@
                     </div>
                     <button class="fav-btn" id="modalFavBtn" aria-label="Toggle Favorite"
                         style="position: static; margin-top: 8px;">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                             <path
                                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
@@ -1178,7 +1186,7 @@
                 card.innerHTML = `
                     <div class="card-image-wrap">
                         <button class="fav-btn ${isFav ? 'active' : ''}" aria-label="Toggle Favorite" data-id="${model.id}">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </button>
@@ -1438,22 +1446,51 @@
             }
         }
 
-        document.getElementById("favViewBtn").addEventListener("click", (e) => {
-            state.showFavoritesOnly = !state.showFavoritesOnly;
+        function goHome() {
+            state.showFavoritesOnly = false;
+            state.typeFilters = [];
+            state.licenseFilters = [];
+            state.searchQuery = "";
             state.currentPage = 1;
 
-            const btn = e.currentTarget;
-            if (state.showFavoritesOnly) {
-                btn.classList.remove("btn-outline");
-                btn.classList.add("btn-primary");
-                btn.style.borderColor = "";
-                btn.style.color = "";
-            } else {
-                btn.classList.add("btn-outline");
-                btn.classList.remove("btn-primary");
-                btn.style.borderColor = "var(--color-text-meta)";
-                btn.style.color = "var(--color-text-meta)";
-            }
+            // Reset Search Input
+            searchInput.value = "";
+
+            // Reset Píldoras UI
+            typeFilterBtns.forEach(b => b.classList.remove("active"));
+            typeFilterBtns[0].classList.add("active");
+
+            licenseFilterBtns.forEach(b => b.classList.remove("active"));
+            licenseFilterBtns[0].classList.add("active");
+
+            // Reset Header Nav UI
+            document.getElementById("homeMenuBtn").classList.add("active");
+            document.getElementById("favViewBtn").classList.remove("active");
+
+            renderCards();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.getElementById("logoLink").addEventListener("click", goHome);
+        document.getElementById("homeMenuBtn").addEventListener("click", goHome);
+
+        document.getElementById("favViewBtn").addEventListener("click", (e) => {
+            state.showFavoritesOnly = true;
+            state.currentPage = 1;
+
+            document.getElementById("homeMenuBtn").classList.remove("active");
+            document.getElementById("favViewBtn").classList.add("active");
+
+            // Opcional: limpiar filtros al entrar a favoritos
+            state.typeFilters = [];
+            state.licenseFilters = [];
+            state.searchQuery = "";
+            searchInput.value = "";
+            typeFilterBtns.forEach(b => b.classList.remove("active"));
+            typeFilterBtns[0].classList.add("active");
+            licenseFilterBtns.forEach(b => b.classList.remove("active"));
+            licenseFilterBtns[0].classList.add("active");
+
             renderCards();
         });
 
