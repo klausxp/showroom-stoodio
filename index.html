@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stoodio Showroom | Model Catalog</title>
+
+    <!-- Google Fonts: Cormorant Garamond (Luxury Serif) & Plus Jakarta Sans (Modern Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            /* High Contrast Minimalism */
+            --color-bg: #FFFFFF;
+            --color-surface: #FAFAFA;
+            --color-surface-hover: #F2F2F2;
+
+            /* Text & Accents */
+            --color-text: #050505;
+            --color-text-light: #555555;
+            --color-text-meta: #888888;
+
+            /* Brand */
+            --color-accent: #7C6FCD;
+            --color-accent-hover: #6B5EBE;
+
+            /* Borders */
+            --color-border: #EEEEEE;
+            --color-border-focus: #111111;
+
+            /* Shapes & Animation */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            --badge-rf-bg: #F0FDF4;
+            --badge-rf-text: #166534;
+            --badge-paid-bg: #F3F0FF;
+            --badge-paid-text: #5B21B6;
+
+            --transition-speed: 0.3s;
+
+            /* Typography */
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+
+            --max-width: 1440px;
+        }
+
+        /* === RESET & BASE === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+
+        input {
+            font-family: inherit;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* === HEADER === */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            height: 90px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            /* Changed from baseline to align image properly */
+            gap: 16px;
+        }
+
+        .logo {
+            height: 48px;
+            /* Increased logo size */
+            width: auto;
+            display: block;
+        }
+
+        .tagline {
+            font-family: var(--font-heading);
+            font-style: italic;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--color-text-meta);
+            letter-spacing: 0.02em;
+            margin-top: 2px;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--color-border-focus);
+            color: var(--color-text);
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--color-text);
+            color: white;
+            border-color: var(--color-text);
+        }
+
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: white;
+            padding: 16px 32px;
+            border-radius: var(--radius-full);
+            font-size: 15px;
+            font-weight: 500;
+            width: 100%;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-accent-hover);
+        }
+
+        /* === HERO SECTION === */
+        .hero {
+            padding-top: 50px;
+            padding-bottom: 40px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 500;
+            letter-spacing: -0.015em;
+            line-height: 1;
+            color: var(--color-text);
+            max-width: 1100px;
+            margin-bottom: 24px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            color: var(--color-text-light);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* === CONTROLS BAR === */
+        .controls-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .filters-group {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--color-text-meta);
+        }
+
+        .search-input:focus {
+            border-color: var(--color-border-focus);
+            background-color: var(--color-bg);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 15px;
+            font-weight: 400;
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            outline: none;
+            transition: border-color var(--transition-speed), background-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .filter-category {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-label {
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-meta);
+        }
+
+        .pill {
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            background-color: transparent;
+            color: var(--color-text-light);
+            border: 1px solid transparent;
+        }
+
+        .pill:hover {
+            color: var(--color-text);
+            background-color: var(--color-surface);
+        }
+
+        .pill.active {
+            background-color: var(--color-text);
+            color: white;
+            border-color: var(--color-text);
+        }
+
+        .custom-model-cta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 12px 8px 24px;
+            background-color: var(--color-bg);
+            border-radius: var(--radius-full);
+            border: 1px solid var(--color-border);
+            transition: border-color var(--transition-speed);
+        }
+
+        .custom-model-cta:hover {
+            border-color: var(--color-accent);
+        }
+
+        .custom-model-texts {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .custom-subtitle {
+            font-size: 13px;
+            color: var(--color-text-meta);
+        }
+
+        .custom-link {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: white;
+            background-color: var(--color-text);
+            padding: 12px 20px;
+            border-radius: var(--radius-full);
+            transition: background-color var(--transition-speed);
+        }
+
+        .custom-link:hover {
+            background-color: var(--color-accent);
+        }
+
+        /* === GRID === */
+        #showroom-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 60px 40px;
+            margin-bottom: 120px;
+        }
+
+        .model-card {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            transition: opacity var(--transition-speed);
+        }
+
+        .model-card:hover {
+            opacity: 0.9;
+        }
+
+        .card-image-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            background-color: var(--color-surface);
+            margin-bottom: 20px;
+            /* Removed border, relying on high-quality images and minimal whitespace */
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .model-card:hover .card-image {
+            transform: scale(1.04);
+        }
+
+        .badges {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .badge-type-avatar {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #000;
+        }
+
+        .badge-type-twin {
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #FFF;
+        }
+
+        .badge-license-rf {
+            background-color: var(--badge-rf-bg);
+            color: var(--badge-rf-text);
+            border: 1px solid rgba(22, 101, 52, 0.1);
+        }
+
+        .badge-license-paid {
+            background-color: var(--badge-paid-bg);
+            color: var(--badge-paid-text);
+            border: 1px solid rgba(91, 33, 182, 0.1);
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .model-name {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 2px;
+            line-height: 1.1;
+        }
+
+        .model-id {
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--color-text-meta);
+            letter-spacing: 0.05em;
+        }
+
+        .card-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+            color: var(--color-text-light);
+            background-color: var(--color-bg);
+        }
+
+        .model-card:hover .card-action {
+            background-color: var(--color-text);
+            border-color: var(--color-text);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state {
+            grid-column: 1 / -1;
+            padding: 120px 0;
+            text-align: center;
+            color: var(--color-text-meta);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            color: var(--color-border);
+            margin-bottom: 24px;
+            stroke-width: 1;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-heading);
+            font-size: 32px;
+            color: var(--color-text);
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+
+        /* === MODAL === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overscroll-behavior: contain;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background-color: var(--color-bg);
+            width: 100%;
+            max-width: 1200px;
+            height: 85vh;
+            border-radius: var(--radius-sm);
+            display: flex;
+            flex-direction: row;
+            transform: translateY(20px) scale(0.98);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+            /* Sophisticated large shadow */
+            border: 1px solid var(--color-border);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            color: var(--color-text);
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            color: var(--color-text-light);
+            transform: scale(1.1);
+        }
+
+        .modal-left {
+            width: 60%;
+            padding: 32px;
+            display: flex;
+            flex-direction: row;
+            /* Changed to row for side-by-side */
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .modal-main-image-wrap {
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--color-surface);
+        }
+
+        .modal-main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-gallery-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            /* Vertical wrapper */
+            align-items: center;
+            width: 100px;
+            /* Fixed width for gallery */
+            height: 100%;
+            gap: 12px;
+        }
+
+        .modal-gallery {
+            display: flex;
+            flex-direction: column;
+            /* Vertical thumbnails */
+            gap: 12px;
+            width: 100%;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            /* Firefox */
+            flex: 1;
+            scroll-behavior: smooth;
+        }
+
+        .modal-gallery::-webkit-scrollbar {
+            display: none;
+            /* Safari and Chrome */
+        }
+
+        .gallery-nav-btn {
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 5;
+            flex-shrink: 0;
+            opacity: 0.8;
+            transition: opacity var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .gallery-nav-btn:hover {
+            opacity: 1;
+            background-color: var(--color-text);
+            color: white;
+            border-color: var(--color-text);
+        }
+
+        .gallery-nav-prev {
+            margin-bottom: 0;
+        }
+
+        .gallery-nav-next {
+            margin-top: 0;
+        }
+
+        .gallery-thumb {
+            width: 100%;
+            aspect-ratio: 3/4;
+            /* Vertical aspect ratio */
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+            scroll-snap-align: start;
+            flex-shrink: 0;
+        }
+
+        .gallery-thumb:hover {
+            opacity: 0.8;
+        }
+
+        .gallery-thumb.active {
+            opacity: 1;
+        }
+
+        .modal-right {
+            width: 40%;
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--color-border);
+            background-color: var(--color-surface);
+        }
+
+        .modal-name {
+            font-family: var(--font-heading);
+            font-size: 64px;
+            font-weight: 500;
+            line-height: 0.95;
+            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+        }
+
+        .modal-id {
+            color: var(--color-text-meta);
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            margin-bottom: 48px;
+            text-transform: uppercase;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 24px;
+            font-size: 15px;
+            margin-bottom: auto;
+            /* pushes actions to bottom */
+        }
+
+        .info-label {
+            color: var(--color-text-meta);
+            font-weight: 500;
+        }
+
+        .info-val {
+            font-weight: 400;
+            color: var(--color-text);
+        }
+
+        .modal-actions {
+            margin-top: 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .secondary-link {
+            color: var(--color-text-light);
+            font-size: 14px;
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            transition: text-decoration-color 0.3s ease;
+            text-align: center;
+        }
+
+        .secondary-link:hover {
+            color: var(--color-text);
+            text-decoration-color: var(--color-text);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            border-top: 1px solid var(--color-border);
+            padding: 40px 0;
+            text-align: center;
+            font-size: 13px;
+            color: var(--color-text-meta);
+            font-weight: 300;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1200px) {
+            #showroom-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 40px 30px;
+            }
+
+            .modal-container {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 900px) {
+            #showroom-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .modal-container {
+                flex-direction: column;
+                height: 95vh;
+            }
+
+            .modal-left,
+            .modal-right {
+                width: 100%;
+            }
+
+            .modal-left {
+                padding: 20px;
+                height: 50%;
+            }
+
+            .modal-right {
+                padding: 40px 30px;
+                height: 50%;
+                border-left: none;
+                border-top: 1px solid var(--color-border);
+            }
+
+            .modal-name {
+                font-size: 36px;
+                margin-bottom: 4px;
+            }
+
+            .modal-id {
+                margin-bottom: 24px;
+            }
+
+            .info-grid {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #showroom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 24px;
+            }
+
+            .hero {
+                padding-top: 60px;
+                padding-bottom: 60px;
+            }
+
+            .controls-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 24px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .filters-group {
+                gap: 16px;
+            }
+
+            .custom-model-cta {
+                justify-content: space-between;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- === HEADER === -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo-area">
+                <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo" width="200" height="48">
+                <div class="tagline">Model Showroom</div>
+            </div>
+            <a href="mailto:sales@stoodio.ai?subject=Requesting%20a%20Model" class="btn-outline">Request a Model</a>
+        </div>
+    </header>
+
+    <!-- === HERO === -->
+    <section class="hero container">
+        <h1>Discover our Model Catalog</h1>
+        <p>Browse, filter and find the perfect model for your next campaign.</p>
+    </section>
+
+    <!-- === CONTROLS === -->
+    <section class="controls-section container">
+        <div class="controls-wrapper">
+
+            <div class="filters-group">
+                <!-- Search -->
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" name="search" autocomplete="off" class="search-input"
+                        placeholder="Search by name or ID…">
+                </div>
+
+                <!-- Type Filter -->
+                <div class="filter-category">
+                    <span class="filter-label">Subject:</span>
+                    <div id="typeFilters">
+                        <button class="pill active" data-filter="all">All</button>
+                        <button class="pill" data-filter="Avatar">Avatars</button>
+                        <button class="pill" data-filter="Digital Twin">Digital Twins</button>
+                    </div>
+                </div>
+
+                <!-- License Filter -->
+                <div class="filter-category">
+                    <span class="filter-label">License:</span>
+                    <div id="licenseFilters">
+                        <button class="pill active" data-filter="all">All</button>
+                        <button class="pill" data-filter="royalty-free">Royalty Free</button>
+                        <button class="pill" data-filter="paid">Available to License</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Model CTA -->
+            <div class="custom-model-cta">
+                <div class="custom-model-texts">
+                    <span class="custom-title">Need a custom model?</span>
+                    <span class="custom-subtitle">Create your own Avatar or bring your Digital Twin</span>
+                </div>
+                <a href="mailto:sales@stoodio.ai?subject=Custom%20Model%20Request" class="custom-link">Talk to us
+                    &rarr;</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- === GRID === -->
+    <main class="container">
+        <div id="showroom-grid">
+            <!-- Cards will be populated here via JS -->
+        </div>
+    </main>
+
+    <!-- === FOOTER === -->
+    <footer class="footer">
+        <div class="container">
+            &copy; 2025 Stoodio.AI &middot; All rights reserved &middot; contact@stoodio.ai
+        </div>
+    </footer>
+
+    <!-- === MODAL === -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-container" id="modalContainer">
+            <button class="modal-close" id="closeModal" aria-label="Close modal">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-left">
+                <div class="modal-gallery-wrapper" id="modalGalleryWrapper" style="display: none;">
+                    <button class="gallery-nav-btn gallery-nav-prev" id="galleryPrevBtn" aria-label="Previous image">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                    </button>
+
+                    <div class="modal-gallery" id="modalGallery">
+                        <!-- Thumbnails populated here -->
+                    </div>
+
+                    <button class="gallery-nav-btn gallery-nav-next" id="galleryNextBtn" aria-label="Next image">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-main-image-wrap">
+                    <img src="" alt="Model Cover" class="modal-main-image" id="modalMainImage" width="600" height="800">
+                </div>
+            </div>
+
+            <div class="modal-right">
+                <h2 class="modal-name" id="modalName">Name</h2>
+                <div class="modal-id" id="modalId">ID</div>
+
+                <div class="info-grid">
+                    <div class="info-label">Subject Type</div>
+                    <div class="info-val" id="modalType">Type</div>
+
+                    <div class="info-label">License</div>
+                    <div class="info-val" id="modalLicense">License</div>
+
+                    <div class="info-label">Price</div>
+                    <div class="info-val" id="modalPrice">Price</div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-primary" id="requestModelBtn">Request this Model</button>
+                    <a href="mailto:sales@stoodio.ai" class="secondary-link">Talk to our sales team</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        /* === MOCK DATA === */
+        const MODELS = [
+            { id: "ST-001", firstName: "Sofia", lastName: "Reyes", type: "Avatar", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-002", firstName: "Marcus", lastName: "Chen", type: "Digital Twin", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-003", firstName: "Elena", lastName: "Vassiliev", type: "Avatar", license: "paid", price: 499, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-004", firstName: "David", lastName: "Okafor", type: "Digital Twin", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-005", firstName: "Yuri", lastName: "Kato", type: "Avatar", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1550927407-50e2bd128b81?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-006", firstName: "Anna", lastName: "Svensson", type: "Digital Twin", license: "paid", price: 599, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-007", firstName: "Julian", lastName: "Silva", type: "Avatar", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-008", firstName: "Chloe", lastName: "Dubois", type: "Digital Twin", license: "paid", price: 399, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-009", firstName: "Liam", lastName: "O'Connor", type: "Avatar", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-010", firstName: "Zara", lastName: "Ali", type: "Digital Twin", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-011", firstName: "Nadia", lastName: "Popova", type: "Avatar", license: "paid", price: 450, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-012", firstName: "Ethan", lastName: "Wright", type: "Digital Twin", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true }
+        ];
+
+        /* === STATE === */
+        let state = {
+            searchQuery: "",
+            typeFilter: "all",
+            licenseFilter: "all"
+        };
+
+        const gridEl = document.getElementById("showroom-grid");
+        const searchInput = document.getElementById("searchInput");
+        const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
+        const licenseFilterBtns = document.querySelectorAll("#licenseFilters .pill");
+
+        const modalOverlay = document.getElementById("detailModal");
+        const closeModalBtn = document.getElementById("closeModal");
+
+        /* === RENDER LOGIC === */
+        function renderCards() {
+            // Filter
+            const filtered = MODELS.filter(model => {
+                if (!model.isPublic) return false;
+
+                // Search
+                const q = state.searchQuery.toLowerCase();
+                const matchesSearch = !q ||
+                    model.firstName.toLowerCase().includes(q) ||
+                    model.lastName.toLowerCase().includes(q) ||
+                    model.id.toLowerCase().includes(q);
+
+                // Type
+                const matchesType = state.typeFilter === "all" || model.type === state.typeFilter;
+
+                // License
+                const matchesLicense = state.licenseFilter === "all" || model.license === state.licenseFilter;
+
+                return matchesSearch && matchesType && matchesLicense;
+            });
+
+            // Grid UI
+            gridEl.innerHTML = "";
+            if (filtered.length === 0) {
+                gridEl.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <h3>No models found</h3>
+                        <p>Try adjusting your filters or search term.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(model => {
+                const card = document.createElement("button");
+                card.className = "model-card";
+                card.setAttribute("aria-label", `View details for ${model.firstName} ${model.lastName}`);
+                card.onclick = () => openModal(model);
+
+                // Badges HTML
+                const typeBadgeClass = model.type === "Avatar" ? "badge-type-avatar" : "badge-type-twin";
+                const licBadgeClass = model.license === "royalty-free" ? "badge-license-rf" : "badge-license-paid";
+
+                let licBadgeText = model.license === "royalty-free" ? "Royalty Free" : "Available to License";
+
+                card.innerHTML = `
+                    <div class="card-image-wrap">
+                        <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
+                        <div class="badges">
+                            <span class="badge ${typeBadgeClass}">${model.type}</span>
+                            <span class="badge ${licBadgeClass}">${licBadgeText}</span>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div>
+                            <div class="model-name">${model.firstName} ${model.lastName}</div>
+                            <div class="model-id">${model.id}</div>
+                        </div>
+                        <div class="card-action">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+                gridEl.appendChild(card);
+            });
+        }
+
+        /* === EVENTS === */
+        searchInput.addEventListener("input", (e) => {
+            state.searchQuery = e.target.value;
+            renderCards();
+        });
+
+        typeFilterBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                typeFilterBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                state.typeFilter = btn.dataset.filter;
+                renderCards();
+            });
+        });
+
+        licenseFilterBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                licenseFilterBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                state.licenseFilter = btn.dataset.filter;
+                renderCards();
+            });
+        });
+
+        /* === MODAL LOGIC === */
+        function openModal(model) {
+            document.body.style.overflow = "hidden"; // Prevent background scroll
+
+            // Populate data
+            document.getElementById("modalMainImage").src = model.coverPhoto;
+            document.getElementById("modalName").textContent = `${model.firstName} ${model.lastName}`;
+            document.getElementById("modalId").textContent = model.id;
+
+            document.getElementById("modalType").textContent = model.type;
+
+            if (model.license === "royalty-free") {
+                document.getElementById("modalLicense").textContent = "Royalty Free";
+                document.getElementById("modalPrice").textContent = "Free";
+            } else {
+                document.getElementById("modalLicense").textContent = "Available to License";
+                document.getElementById("modalPrice").textContent = `$${model.price} / project`;
+            }
+
+            // Populate Gallery
+            const galleryEl = document.getElementById("modalGallery");
+            const galleryWrapper = document.getElementById("modalGalleryWrapper");
+            galleryEl.innerHTML = "";
+
+            // Re-bind exact photo behavior
+            model.portfolioPhotos.forEach((photoUrl, index) => {
+                const img = document.createElement("img");
+                img.src = photoUrl;
+                img.className = "gallery-thumb" + (index === 0 ? " active" : "");
+                img.onclick = () => {
+                    document.getElementById("modalMainImage").src = photoUrl;
+                    document.querySelectorAll(".gallery-thumb").forEach(t => t.classList.remove("active"));
+                    img.classList.add("active");
+                };
+                galleryEl.appendChild(img);
+            });
+
+            // Handle chevron visibility - simplified logic based purely on photo count
+            if (model.portfolioPhotos.length > 3) {
+                galleryWrapper.style.display = "flex";
+                document.getElementById("galleryPrevBtn").style.display = "flex";
+                document.getElementById("galleryNextBtn").style.display = "flex";
+                galleryEl.style.justifyContent = "flex-start";
+            } else if (model.portfolioPhotos.length > 1) {
+                galleryWrapper.style.display = "flex";
+                document.getElementById("galleryPrevBtn").style.display = "none";
+                document.getElementById("galleryNextBtn").style.display = "none";
+                galleryEl.style.justifyContent = "center";
+            } else {
+                galleryWrapper.style.display = "none";
+            }
+
+            // Make request button compose an email prepopulated with model info
+            const reqBtn = document.getElementById("requestModelBtn");
+            reqBtn.onclick = () => {
+                window.location.href = `mailto:sales@stoodio.ai?subject=Requesting Model ${model.id}&body=Hi team,%0D%0A%0D%0AI would like to request the model ${model.firstName} ${model.lastName} (${model.id}).%0D%0A%0D%0AThank you!`;
+            };
+
+            // Show modal
+            modalOverlay.classList.add("active");
+        }
+
+        function closeModal() {
+            document.body.style.overflow = "";
+            modalOverlay.classList.remove("active");
+        }
+
+        closeModalBtn.addEventListener("click", closeModal);
+        modalOverlay.addEventListener("click", (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Gallery Chevron Controls
+        document.getElementById("galleryPrevBtn").addEventListener("click", () => {
+            document.getElementById("modalGallery").scrollBy({ top: -120, behavior: 'smooth' });
+        });
+
+        document.getElementById("galleryNextBtn").addEventListener("click", () => {
+            document.getElementById("modalGallery").scrollBy({ top: 120, behavior: 'smooth' });
+        });
+
+        // Initialize
+        renderCards();
+
+    </script>
+</body>
+
+</html>
