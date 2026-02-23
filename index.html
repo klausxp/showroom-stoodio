@@ -385,15 +385,12 @@
             transform: scale(1.04);
         }
 
-        .badges {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            right: 16px;
+        .card-badges {
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
+            margin-top: 6px;
             pointer-events: none;
-            z-index: 2;
+            flex-wrap: wrap;
         }
 
         .badge {
@@ -1130,15 +1127,14 @@
                 card.innerHTML = `
                     <div class="card-image-wrap">
                         <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
-                        <div class="badges">
-                            <span class="badge ${typeBadgeClass}">${model.type}</span>
-                            <span class="badge ${licBadgeClass}">${licBadgeText}</span>
-                        </div>
                     </div>
                     <div class="card-info">
                         <div>
                             <div class="model-name">${model.firstName} ${model.lastName}</div>
-                            <div class="model-id">${model.id}</div>
+                            <div class="card-badges">
+                                <span class="badge ${typeBadgeClass}">${model.type}</span>
+                                <span class="badge ${licBadgeClass}">${licBadgeText}</span>
+                            </div>
                         </div>
                         <div class="card-action">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
