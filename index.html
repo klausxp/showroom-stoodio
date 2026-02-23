@@ -138,8 +138,8 @@
         }
 
         .btn-outline {
-            border: 1px solid var(--color-border-focus);
-            color: var(--color-text);
+            background-color: var(--color-accent);
+            color: white;
             padding: 12px 28px;
             border-radius: var(--radius-full);
             font-size: 13px;
@@ -149,9 +149,7 @@
         }
 
         .btn-outline:hover {
-            background-color: var(--color-text);
-            color: white;
-            border-color: var(--color-text);
+            background-color: var(--color-accent-hover);
         }
 
         .btn-primary {
@@ -280,9 +278,14 @@
         }
 
         .pill.active {
-            background-color: var(--color-text);
+            background-color: var(--color-accent);
             color: white;
-            border-color: var(--color-text);
+            border-color: var(--color-accent);
+        }
+
+        .pill.active:hover {
+            background-color: var(--color-accent);
+            color: white;
         }
 
         .custom-model-cta {
@@ -324,14 +327,14 @@
             letter-spacing: 0.1em;
             font-weight: 700;
             color: white;
-            background-color: var(--color-text);
+            background-color: var(--color-accent);
             padding: 12px 20px;
             border-radius: var(--radius-full);
             transition: background-color var(--transition-speed);
         }
 
         .custom-link:hover {
-            background-color: var(--color-accent);
+            background-color: var(--color-accent-hover);
         }
 
         /* === GRID === */
