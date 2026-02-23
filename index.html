@@ -385,50 +385,16 @@
             transform: scale(1.04);
         }
 
-        .card-badges {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-            pointer-events: none;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            padding: 6px 12px;
-            border-radius: var(--radius-full);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-
-        .badge-type-avatar {
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #000;
-        }
-
-        .badge-type-twin {
-            background-color: rgba(0, 0, 0, 0.85);
-            color: #FFF;
-        }
-
-        .badge-license-rf {
-            background-color: var(--badge-rf-bg);
-            color: var(--badge-rf-text);
-            border: 1px solid rgba(22, 101, 52, 0.1);
-        }
-
-        .badge-license-paid {
-            background-color: var(--badge-paid-bg);
-            color: var(--badge-paid-text);
-            border: 1px solid rgba(91, 33, 182, 0.1);
-        }
-
         .card-info {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-details {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
             align-items: flex-start;
         }
 
@@ -441,11 +407,14 @@
             line-height: 1.1;
         }
 
-        .model-id {
+        .model-meta-text {
             font-family: var(--font-body);
             font-size: 13px;
             color: var(--color-text-meta);
             letter-spacing: 0.05em;
+            display: flex;
+            gap: 6px;
+            align-items: center;
         }
 
         .card-action {
@@ -1118,10 +1087,6 @@
                 card.setAttribute("aria-label", `View details for ${model.firstName} ${model.lastName}`);
                 card.onclick = () => openModal(model);
 
-                // Badges HTML
-                const typeBadgeClass = model.type === "Avatar" ? "badge-type-avatar" : "badge-type-twin";
-                const licBadgeClass = model.license === "royalty-free" ? "badge-license-rf" : "badge-license-paid";
-
                 let licBadgeText = model.license === "royalty-free" ? "Royalty Free" : "Available to License";
 
                 card.innerHTML = `
@@ -1129,11 +1094,12 @@
                         <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
                     </div>
                     <div class="card-info">
-                        <div>
+                        <div class="card-details">
                             <div class="model-name">${model.firstName} ${model.lastName}</div>
-                            <div class="card-badges">
-                                <span class="badge ${typeBadgeClass}">${model.type}</span>
-                                <span class="badge ${licBadgeClass}">${licBadgeText}</span>
+                            <div class="model-meta-text">
+                                <span>${model.type}</span>
+                                <span>&bull;</span>
+                                <span>${licBadgeText}</span>
                             </div>
                         </div>
                         <div class="card-action">
