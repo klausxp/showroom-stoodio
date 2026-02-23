@@ -1042,8 +1042,8 @@
         /* === STATE === */
         let state = {
             searchQuery: "",
-            typeFilter: "all",
-            licenseFilter: "all",
+            typeFilters: [],    // Array vacío asume "All"
+            licenseFilters: [], // Array vacío asume "All"
             currentPage: 1,
             itemsPerPage: 12
         };
@@ -1069,11 +1069,11 @@
                     model.lastName.toLowerCase().includes(q) ||
                     model.id.toLowerCase().includes(q);
 
-                // Type
-                const matchesType = state.typeFilter === "all" || model.type === state.typeFilter;
+                // Type (OR intra-category)
+                const matchesType = state.typeFilters.length === 0 || state.typeFilters.includes(model.type);
 
-                // License
-                const matchesLicense = state.licenseFilter === "all" || model.license === state.licenseFilter;
+                // License (OR intra-category)
+                const matchesLicense = state.licenseFilters.length === 0 || state.licenseFilters.includes(model.license);
 
                 return matchesSearch && matchesType && matchesLicense;
             });
@@ -1188,20 +1188,56 @@
 
         typeFilterBtns.forEach(btn => {
             btn.addEventListener("click", () => {
-                typeFilterBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                state.typeFilter = btn.dataset.filter;
-                state.currentPage = 1; // Reset to page 1 on filter change
+                const filter = btn.dataset.filter;
+
+                if (filter === "all") {
+                    typeFilterBtns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    state.typeFilters = [];
+                } else {
+                    typeFilterBtns[0].classList.remove("active"); // Remove "All" active
+                    btn.classList.toggle("active");
+
+                    // Rebuild array based on active buttons
+                    state.typeFilters = Array.from(typeFilterBtns)
+                        .filter(b => b.classList.contains("active") && b.dataset.filter !== "all")
+                        .map(b => b.dataset.filter);
+
+                    // If no specific filters remain, fall back to "All"
+                    if (state.typeFilters.length === 0) {
+                        typeFilterBtns[0].classList.add("active");
+                    }
+                }
+
+                state.currentPage = 1;
                 renderCards();
             });
         });
 
         licenseFilterBtns.forEach(btn => {
             btn.addEventListener("click", () => {
-                licenseFilterBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                state.licenseFilter = btn.dataset.filter;
-                state.currentPage = 1; // Reset to page 1 on filter change
+                const filter = btn.dataset.filter;
+
+                if (filter === "all") {
+                    licenseFilterBtns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    state.licenseFilters = [];
+                } else {
+                    licenseFilterBtns[0].classList.remove("active"); // Remove "All" active
+                    btn.classList.toggle("active");
+
+                    // Rebuild array based on active buttons
+                    state.licenseFilters = Array.from(licenseFilterBtns)
+                        .filter(b => b.classList.contains("active") && b.dataset.filter !== "all")
+                        .map(b => b.dataset.filter);
+
+                    // If no specific filters remain, fall back to "All"
+                    if (state.licenseFilters.length === 0) {
+                        licenseFilterBtns[0].classList.add("active");
+                    }
+                }
+
+                state.currentPage = 1;
                 renderCards();
             });
         });
