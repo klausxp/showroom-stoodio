@@ -176,10 +176,13 @@
         /* === HERO SECTION === */
         .hero {
             padding-top: 50px;
-            padding-bottom: 40px;
             text-align: left;
-            border-bottom: 1px solid var(--color-border);
             margin-bottom: 40px;
+        }
+
+        .hero-inner {
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--color-border);
         }
 
         .hero h1 {
@@ -936,8 +939,10 @@
 
     <!-- === HERO === -->
     <section class="hero container">
-        <h1>Discover our Model Catalog</h1>
-        <p>Browse, filter and find the perfect model for your next campaign.</p>
+        <div class="hero-inner">
+            <h1>Discover our Model Catalog</h1>
+            <p>Browse, filter and find the perfect model for your next campaign.</p>
+        </div>
     </section>
 
     <!-- === CONTROLS === -->
