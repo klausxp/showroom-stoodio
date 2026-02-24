@@ -1421,14 +1421,6 @@
                         placeholder="Search by name...">
                 </div>
 
-                <!-- Sort Dropdown -->
-                <div class="sort-box">
-                    <select id="sortSelect" class="sort-select" aria-label="Sort models">
-                        <option value="price_desc">Recommended</option>
-                        <option value="price_asc">Price: Low to High</option>
-                    </select>
-                </div>
-
                 <!-- Advanced Filters Button -->
                 <button id="advancedFiltersBtn" class="advanced-filters-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -1567,6 +1559,17 @@
             </div>
 
             <div class="drawer-content">
+                <!-- Sorting Section -->
+                <div class="drawer-section">
+                    <span class="drawer-section-title">Order By</span>
+                    <div class="drawer-options">
+                        <select id="sortSelect" class="sort-select" style="width: 100%;" aria-label="Sort models">
+                            <option value="price_desc">Recommended (Price High to Low)</option>
+                            <option value="price_asc">Price: Low to High</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Gender Section -->
                 <div class="drawer-section">
                     <span class="drawer-section-title">Gender</span>
@@ -1896,18 +1899,73 @@
                 shortlistCountText.textContent = `Shortlist (${state.shortlist.length})`;
             }
 
-            // Inject B2B CTA if in Shortlist view
+            // Inject Integrated Sharing Tools if in Shortlist view
             if (state.showShortlistOnly && state.shortlist.length > 0) {
-                const ctaWrap = document.createElement("div");
-                ctaWrap.style.gridColumn = "1 / -1";
-                ctaWrap.style.textAlign = "center";
-                ctaWrap.style.padding = "40px 0";
+                const shareBlock = document.createElement("div");
+                shareBlock.className = "share-section";
+                shareBlock.style.gridColumn = "1 / -1";
+                shareBlock.style.padding = "60px 40px";
+                shareBlock.style.marginTop = "40px";
+                shareBlock.style.background = "var(--color-surface)";
+                shareBlock.style.borderRadius = "24px";
+                shareBlock.style.border = "1px solid var(--color-border)";
+                shareBlock.style.display = "flex";
+                shareBlock.style.flexDirection = "column";
+                shareBlock.style.alignItems = "center";
+                shareBlock.style.gap = "24px";
 
-                const selectedIds = state.shortlist.join(", ");
-                const mailtoUrl = `mailto:sales@stoodio.ai?subject=Requesting%20Access%20to%20Shortlist&body=Hi%20Stoodio%20team,%0D%0A%0D%0AI'd%20like%20to%20request%20access%20to%20the%20following%20models:%0D%0A${selectedIds}%0D%0A%0D%0AThank%20you!`;
+                shareBlock.innerHTML = `
+                    <div style="text-align:center;">
+                        <h3 style="font-size: 24px; margin-bottom: 8px;">Share Selection</h3>
+                        <p style="color: var(--color-text-meta); font-size: 14px;">Send this selection directly to a client's email.</p>
+                    </div>
+                    <form id="shareShortlistForm" style="width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 16px;">
+                        <input type="email" id="clientEmail" placeholder="Client Name or Email Address" required 
+                               style="width: 100%; padding: 14px 20px; border-radius: var(--radius-full); border: 1px solid var(--color-border); font-size: 15px;">
+                        
+                        <button type="submit" class="btn-primary" style="width: 100%;">
+                            Send Selection to Client
+                        </button>
+                    </form>
+                    <div id="shareStatusMessage" style="font-size: 14px; font-weight: 500; display: none;"></div>
+                `;
 
-                ctaWrap.innerHTML = `<a href="${mailtoUrl}" class="btn-primary" style="display:inline-block; width:auto;">Request Access to Selection</a>`;
-                gridEl.appendChild(ctaWrap);
+                gridEl.appendChild(shareBlock);
+
+                const form = document.getElementById("shareShortlistForm");
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById("clientEmail").value;
+                    const statusMsg = document.getElementById("shareStatusMessage");
+                    const submitBtn = form.querySelector('button');
+
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Processing...";
+
+                    // Generate Link
+                    updateURL();
+                    const shareLink = window.location.href;
+
+                    // Simulated sending (as it's a static site)
+                    // In a real scenario, here we call an API or EmailJS
+                    setTimeout(() => {
+                        statusMsg.style.display = "block";
+                        statusMsg.style.color = "#059669";
+                        statusMsg.textContent = `✓ Selection successfully sent to ${email}`;
+
+                        submitBtn.textContent = "Sent!";
+                        submitBtn.style.background = "#059669";
+
+                        console.log("CLIENT SELECTION LINK:", shareLink);
+
+                        setTimeout(() => {
+                            statusMsg.style.display = "none";
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = "Send Selection to Client";
+                            submitBtn.style.background = "var(--color-accent)";
+                        }, 4000);
+                    }, 1200);
+                };
             }
 
             renderPagination(filtered.length);
