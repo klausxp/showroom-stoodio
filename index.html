@@ -1562,11 +1562,10 @@
                 <!-- Sorting Section -->
                 <div class="drawer-section">
                     <span class="drawer-section-title">Order By</span>
-                    <div class="drawer-options">
-                        <select id="sortSelect" class="sort-select" style="width: 100%;" aria-label="Sort models">
-                            <option value="price_desc">Recommended (Price High to Low)</option>
-                            <option value="price_asc">Price: Low to High</option>
-                        </select>
+                    <div class="drawer-options" id="sortOptions">
+                        <button class="drawer-option-pill active" data-sort="price_desc">Recommended (Price High to
+                            Low)</button>
+                        <button class="drawer-option-pill" data-sort="price_asc">Price: Low to High</button>
                     </div>
                 </div>
 
@@ -1755,9 +1754,9 @@
 
         const gridEl = document.getElementById("showroom-grid");
         const searchInput = document.getElementById("searchInput");
-        const sortSelect = document.getElementById("sortSelect");
         const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
         const licenseFilterBtns = document.querySelectorAll("#licenseFilters .pill");
+        const sortBtns = document.querySelectorAll("#sortOptions .drawer-option-pill");
 
         const advancedFiltersBtn = document.getElementById("advancedFiltersBtn");
         const filtersOverlay = document.getElementById("filtersOverlay");
@@ -2024,12 +2023,7 @@
             renderCards();
         });
 
-        sortSelect.addEventListener("change", (e) => {
-            state.sortBy = e.target.value;
-            state.currentPage = 1;
-            updateURL();
-            renderCards();
-        });
+
 
         typeFilterBtns.forEach(btn => {
             btn.addEventListener("click", () => {
@@ -2105,12 +2099,12 @@
             if (e.target === filtersOverlay) closeDrawer();
         });
 
-        const handleDrawerPillClick = (btns, stateKey) => {
+        const handleDrawerPillClick = (btns, stateKey, dataAttr = stateKey.replace('Filter', '')) => {
             btns.forEach(btn => {
                 btn.addEventListener("click", () => {
                     btns.forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
-                    state[stateKey] = btn.getAttribute(`data-${stateKey.replace('Filter', '')}`);
+                    state[stateKey] = btn.getAttribute(`data-${dataAttr}`);
                 });
             });
         };
@@ -2118,11 +2112,13 @@
         handleDrawerPillClick(genderBtns, "genderFilter");
         handleDrawerPillClick(ageBtns, "ageRangeFilter");
         handleDrawerPillClick(regionBtns, "regionFilter");
+        handleDrawerPillClick(sortBtns, "sortBy", "sort");
 
         const resetAdvancedFiltersUI = () => {
             state.genderFilter = "all";
             state.ageRangeFilter = "all";
             state.regionFilter = "all";
+            state.sortBy = "price_desc";
 
             [genderBtns, ageBtns, regionBtns].forEach(group => {
                 group.forEach(btn => {
@@ -2132,6 +2128,13 @@
                         btn.classList.add("active");
                     }
                 });
+            });
+
+            sortBtns.forEach(btn => {
+                btn.classList.remove("active");
+                if (btn.getAttribute("data-sort") === "price_desc") {
+                    btn.classList.add("active");
+                }
             });
         };
 
@@ -2390,7 +2393,6 @@
             }
             if (params.has("sort")) {
                 state.sortBy = params.get("sort");
-                if (sortSelect) sortSelect.value = state.sortBy;
             }
             if (params.has("selection")) {
                 state.shortlist = params.get("selection").split(",");
@@ -2438,6 +2440,15 @@
                         btn.classList.remove("active");
                     }
                 });
+            });
+
+            // Sync sort pills
+            sortBtns.forEach(btn => {
+                if (state.sortBy === btn.dataset.sort) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
             });
         }
 
