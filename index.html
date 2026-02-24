@@ -2032,6 +2032,9 @@
                         <input type="email" id="clientEmail" placeholder="Client Name or Email Address" required 
                                style="width: 100%; padding: 14px 20px; border-radius: var(--radius-full); border: 1px solid var(--color-border); font-size: 15px;">
                         
+                        <textarea id="clientMessage" placeholder="Add a personal message (optional)" rows="3"
+                                  style="width: 100%; padding: 14px 20px; border-radius: 16px; border: 1px solid var(--color-border); font-size: 15px; font-family: inherit; resize: vertical;"></textarea>
+
                         <button type="submit" class="btn-primary" style="width: 100%;">
                             Send Selection to Client
                         </button>
@@ -2045,6 +2048,7 @@
                 form.onsubmit = (e) => {
                     e.preventDefault();
                     const email = document.getElementById("clientEmail").value;
+                    const message = document.getElementById("clientMessage").value;
                     const statusMsg = document.getElementById("shareStatusMessage");
                     const submitBtn = form.querySelector('button');
 
@@ -2065,13 +2069,21 @@
                         submitBtn.textContent = "Sent!";
                         submitBtn.style.background = "#059669";
 
-                        console.log("CLIENT SELECTION LINK:", shareLink);
+                        // Simular log de envío de email
+                        console.group("📧 Email Sent to Client");
+                        console.log("To:", email);
+                        console.log("Message:", message || "(No personal message appended)");
+                        console.log("Link:", shareLink);
+                        console.groupEnd();
 
                         setTimeout(() => {
                             statusMsg.style.display = "none";
                             submitBtn.disabled = false;
                             submitBtn.textContent = "Send Selection to Client";
                             submitBtn.style.background = "var(--color-accent)";
+                            // Limpiar campos
+                            document.getElementById("clientEmail").value = "";
+                            document.getElementById("clientMessage").value = "";
                         }, 4000);
                     }, 1200);
                 };
