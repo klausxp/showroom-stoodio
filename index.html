@@ -634,13 +634,13 @@
         }
 
         .fav-btn.active {
-            color: #10B981;
-            /* Verde esmeralda (#10B981) sugerido por el usuario */
+            color: #ef4444;
+            /* Rojo premium para el estado activo */
         }
 
         .fav-btn.active svg {
-            fill: #10B981;
-            stroke: #10B981;
+            fill: #ef4444;
+            stroke: #ef4444;
         }
 
 
@@ -2118,22 +2118,25 @@
                     submitBtn.disabled = true;
                     submitBtn.textContent = "Processing...";
 
-                    // Generate Link depending on Role
+                    // === GENERAR URL SEGÚN ROL Y MODO ===
+                    // URL 1 (Agencia → Cliente Curado):   ?view=client-curated&catalog=IDs
+                    // URL 2 (Agencia → Cliente Global):   ?view=client-browse
+                    // URL 3 (Cliente → Agencia Revisión): ?view=agency-review&picks=IDs
                     const linkParams = new URLSearchParams();
 
                     if (state.role === 'agency') {
-                        // Agencia manda a Cliente un Catálogo Restringido
-                        linkParams.set("role", "client");
+                        // Agencia crea catálogo curado para el Cliente
+                        linkParams.set("view", "client-curated");
                         linkParams.set("catalog", state.shortlist.join(","));
                     } else {
-                        // Cliente devuelve Selección a Agencia
-                        linkParams.set("role", "agency");
+                        // Cliente devuelve su selección a la Agencia para revisión
+                        linkParams.set("view", "agency-review");
                         if (state.isCuratedCatalog) {
-                            // Devuelve la ID del catálogo en el que estaba trabajando para contexto
+                            // Referencia al catálogo original para contexto
                             const currentIds = originalModels.map(m => m.id);
-                            linkParams.set("catalog_ref", currentIds.join(","));
+                            linkParams.set("catalog-ref", currentIds.join(","));
                         }
-                        linkParams.set("selection", state.shortlist.join(","));
+                        linkParams.set("picks", state.shortlist.join(","));
                     }
 
                     const shareLinkBase = window.location.origin + window.location.pathname;
@@ -2652,15 +2655,24 @@
             if (state.searchQuery) params.set("search", state.searchQuery);
             if (state.maxPrice < 1000) params.set("maxPrice", state.maxPrice);
 
-            // Re-escribir estado natural en la barra del navegador (sin provocar loop de history)
-            if (state.role !== 'agency') params.set("role", state.role);
-            if (state.isCuratedCatalog) {
-                // Si el catálogo está curado, siempre debe estar en la URL
-                const currentIds = originalModels.map(m => m.id);
-                params.set("catalog", currentIds.join(","));
+            // === URLs DESCRIPTIVAS POR ROL Y MODO ===
+            // URL 1: Agency browsing full catalog (default, sin parámetro extra)
+            // URL 2: Client browsing a curated catalog  --> ?view=client-curated&catalog=ID1,ID2
+            // URL 3: Client browsing full catalog       --> ?view=client-browse
+
+            if (state.role === 'client') {
+                if (state.isCuratedCatalog) {
+                    params.set("view", "client-curated");
+                    const currentIds = originalModels.map(m => m.id);
+                    params.set("catalog", currentIds.join(","));
+                } else {
+                    params.set("view", "client-browse");
+                }
             }
+            // La agencia (agency) es el default: no añadimos parámetro view
+
             if (state.showShortlistOnly && state.shortlist.length > 0) {
-                params.set("selection", state.shortlist.join(","));
+                params.set("picks", state.shortlist.join(","));
             }
             if (state.isAdmin) params.set("admin", "true");
 
@@ -2671,7 +2683,24 @@
         function loadFromURL() {
             const params = new URLSearchParams(window.location.search);
 
-            if (params.has("role")) state.role = params.get("role");
+            // === PARSEAR URLS DESCRIPTIVAS POR ROL Y MODO ===
+            // Soportamos tanto el nuevo parámetro 'view' como el antiguo 'role' (retrocompatibilidad)
+            const viewParam = params.get("view");
+            const roleParam = params.get("role");
+
+            if (viewParam === "client-curated") {
+                state.role = 'client';
+                state.isCuratedCatalog = true;
+            } else if (viewParam === "client-browse") {
+                state.role = 'client';
+            } else if (viewParam === "agency-review") {
+                // La Agencia recibe de vuelta la selección del Cliente: role agency (default)
+                // No cambiamos state.role, sigue siendo 'agency'
+                // Los picks se cargan más abajo en el bloque picksParam
+            } else if (roleParam === 'client') {
+                // Retrocompatibilidad con el parámetro antiguo
+                state.role = 'client';
+            }
 
             if (params.has("catalog")) {
                 const catalogIds = params.get("catalog").split(",");
@@ -2693,17 +2722,13 @@
             if (params.has("maxPrice")) {
                 state.maxPrice = parseInt(params.get("maxPrice"));
             }
-            if (params.has("selection")) {
-                state.shortlist = params.get("selection").split(",");
+            // Soportar tanto 'picks' (nuevo) como 'selection' (antiguo)
+            const picksParam = params.get("picks") || params.get("selection");
+            if (picksParam) {
+                state.shortlist = picksParam.split(",");
                 state.showShortlistOnly = true;
                 if (catalogBtn) catalogBtn.classList.remove("active");
                 if (shortlistViewBtn) shortlistViewBtn.classList.add("active-view");
-            }
-
-            // Adaptar UI según rol
-            if (state.role === 'client') {
-                const sLabel = document.getElementById('shortlistCounterLabel');
-                if (sLabel) sLabel.textContent = "My Selection";
             }
 
             if (params.get("admin") === "true") {
