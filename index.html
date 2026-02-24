@@ -2039,7 +2039,13 @@
                             Send Selection to Client
                         </button>
                     </form>
-                    <div id="shareStatusMessage" style="font-size: 14px; font-weight: 500; display: none;"></div>
+                    <div id="shareStatusMessage" style="font-size: 14px; font-weight: 500; display: none; text-align: center;"></div>
+                    
+                    <!-- Copy Link Container -->
+                    <div id="shareLinkContainer" style="display: none; width: 100%; max-width: 480px; align-items: center; justify-content: space-between; padding: 14px 20px; background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; margin-top: 8px;">
+                        <div id="shareLinkText" style="font-size: 13px; color: var(--color-text-meta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%;"></div>
+                        <button id="copyShareLinkBtn" type="button" style="background: none; border: none; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; transition: color var(--transition-speed); padding: 4px 8px; border-radius: 6px;">Copy Link</button>
+                    </div>
                 `;
 
                 gridEl.appendChild(shareBlock);
@@ -2076,6 +2082,28 @@
                         console.log("Link:", shareLink);
                         console.groupEnd();
 
+                        // Revelar enlace para copiar
+                        const linkContainer = document.getElementById("shareLinkContainer");
+                        const linkText = document.getElementById("shareLinkText");
+                        const copyBtn = document.getElementById("copyShareLinkBtn");
+
+                        if (linkContainer && linkText && copyBtn) {
+                            linkText.textContent = shareLink;
+                            linkContainer.style.display = "flex";
+
+                            // Lógica de copiado
+                            copyBtn.onclick = () => {
+                                navigator.clipboard.writeText(shareLink).then(() => {
+                                    copyBtn.textContent = "Copied ✓";
+                                    copyBtn.style.color = "#059669";
+                                    setTimeout(() => {
+                                        copyBtn.textContent = "Copy Link";
+                                        copyBtn.style.color = "var(--color-text)";
+                                    }, 2000);
+                                });
+                            };
+                        }
+
                         setTimeout(() => {
                             statusMsg.style.display = "none";
                             submitBtn.disabled = false;
@@ -2084,6 +2112,7 @@
                             // Limpiar campos
                             document.getElementById("clientEmail").value = "";
                             document.getElementById("clientMessage").value = "";
+                            // NO ocultamos el link generado, lo dejamos visible para el usuario hasta que cierre/limpie la vista.
                         }, 4000);
                     }, 1200);
                 };
