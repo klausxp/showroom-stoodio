@@ -633,14 +633,24 @@
             background-color: white;
         }
 
-        .fav-btn.active {
+        [data-role="client"] .fav-btn.active {
             color: #ef4444;
-            /* Rojo premium para el estado activo */
+            /* Rojo premium */
         }
 
-        .fav-btn.active svg {
+        [data-role="client"] .fav-btn.active svg {
             fill: #ef4444;
             stroke: #ef4444;
+        }
+
+        [data-role="agency"] .fav-btn.active {
+            color: #10B981;
+            /* Verde esmeralda */
+        }
+
+        [data-role="agency"] .fav-btn.active svg {
+            fill: #10B981;
+            stroke: #10B981;
         }
 
 
@@ -2735,6 +2745,9 @@
                 state.isAdmin = true;
                 showAdminTools();
             }
+
+            // Sync document role data attribute para CSS (colores dinámicos)
+            document.body.setAttribute("data-role", state.role);
 
             // Update UI components
             syncFiltersUI();
