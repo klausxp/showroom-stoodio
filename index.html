@@ -968,22 +968,6 @@
             right: 0;
         }
 
-        .drawer-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 12px;
-            margin-right: -12px;
-        }
-
-        .drawer-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .drawer-content::-webkit-scrollbar-thumb {
-            background-color: var(--color-border);
-            border-radius: var(--radius-full);
-        }
-
         .drawer-header {
             display: flex;
             justify-content: space-between;
@@ -1004,6 +988,42 @@
             color: var(--color-text);
             padding: 8px;
             margin-right: -8px;
+            transition: transform 0.3s ease;
+        }
+
+        .drawer-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+            /* Space for scrollbar */
+            margin-right: -10px;
+            /* Hide scrollbar bleed */
+            display: flex;
+            flex-direction: column;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Custom Scrollbar for Drawer */
+        .drawer-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .drawer-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .drawer-content::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 10px;
+        }
+
+        .drawer-content::-webkit-scrollbar-thumb:hover {
+            background: var(--color-text-meta);
         }
 
         .drawer-section {
@@ -1049,52 +1069,73 @@
             border-color: var(--color-text);
         }
 
-        /* Price Slider Styles */
-        .price-slider-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        /* === PRICE SLIDER STYLES === */
+        .price-range-container {
+            padding: 10px 0 20px 0;
         }
 
-        .price-slider-header {
+        .price-display {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
         }
 
-        .price-slider-value {
-            font-size: 14px;
+        .price-label-current {
+            font-size: 18px;
             font-weight: 600;
             color: var(--color-text);
-            font-variant-numeric: tabular-nums;
+            font-family: var(--font-body);
         }
 
-        .price-slider {
+        .price-limit {
+            font-size: 12px;
+            color: var(--color-text-meta);
+            font-weight: 500;
+        }
+
+        .custom-slider {
             -webkit-appearance: none;
             appearance: none;
             width: 100%;
             height: 4px;
-            border-radius: 2px;
             background: var(--color-border);
+            border-radius: 2px;
             outline: none;
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
-        .price-slider::-webkit-slider-thumb {
+        .custom-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 20px;
             height: 20px;
-            border-radius: 50%;
             background: var(--color-text);
+            border-radius: 50%;
             cursor: pointer;
             border: 2px solid var(--color-bg);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
         }
 
-        .price-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-slider::-webkit-slider-thumb:active {
+            transform: scale(1.05);
+        }
+
+        .custom-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--color-text);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--color-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease;
         }
 
         .drawer-footer {
@@ -1623,13 +1664,16 @@
             </div>
 
             <div class="drawer-content">
-                <!-- Sorting Section -->
+                <!-- Price Range Section -->
                 <div class="drawer-section">
-                    <span class="drawer-section-title">Order By</span>
-                    <div class="drawer-options" id="sortOptions">
-                        <button class="drawer-option-pill active" data-sort="price_desc">Recommended (Price High to
-                            Low)</button>
-                        <button class="drawer-option-pill" data-sort="price_asc">Price: Low to High</button>
+                    <span class="drawer-section-title">Budget (Max Price)</span>
+                    <div class="price-range-container">
+                        <div class="price-display">
+                            <span id="priceValue" class="price-label-current">Up to $1000</span>
+                            <span class="price-limit">$1000+</span>
+                        </div>
+                        <input type="range" id="priceRange" class="custom-slider" min="0" max="1000" step="50"
+                            value="1000">
                     </div>
                 </div>
 
@@ -1820,9 +1864,8 @@
         const searchInput = document.getElementById("searchInput");
         const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
         const licenseFilterBtns = document.querySelectorAll("#licenseFilters .pill");
-
         const priceRange = document.getElementById("priceRange");
-        const priceDisplay = document.getElementById("priceDisplay");
+        const priceValue = document.getElementById("priceValue");
 
         const advancedFiltersBtn = document.getElementById("advancedFiltersBtn");
         const filtersOverlay = document.getElementById("filtersOverlay");
@@ -1843,6 +1886,12 @@
 
         /* === RENDER LOGIC === */
         function renderCards() {
+            // Toggle Custom Models visibility
+            const customModelsSection = document.getElementById("custom-models");
+            if (customModelsSection) {
+                customModelsSection.style.display = state.showShortlistOnly ? "none" : "block";
+            }
+
             // Filter
             const filtered = MODELS.filter(model => {
                 if (!model.isPublic) return false;
@@ -1876,23 +1925,14 @@
                 }
 
                 // Price Filter
-                const modelPrice = model.price || 0;
-                const matchesPrice = state.maxPrice >= 1000 ? true : modelPrice <= state.maxPrice;
+                const modelPrice = model.price || 0; // Treatment for Royalty Free as $0
+                const matchesPrice = modelPrice <= state.maxPrice;
 
                 return matchesSearch && matchesType && matchesLicense && matchesGender && matchesRegion && matchesAge && matchesPrice;
             });
 
-            // Sort logic: Caro primero por defecto o según estado
-            filtered.sort((a, b) => {
-                const priceA = a.price || 0;
-                const priceB = b.price || 0;
-
-                if (state.sortBy === "price_asc") {
-                    return priceA - priceB;
-                }
-                // default price_desc
-                return priceB - priceA;
-            });
+            // Sort logic: Allways Recommended (Price High to Low) now
+            filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
 
             // Grid UI
             gridEl.innerHTML = "";
@@ -2095,19 +2135,13 @@
 
         priceRange.addEventListener("input", (e) => {
             const val = parseInt(e.target.value);
-            priceDisplay.textContent = val >= 1000 ? "1000" : val;
-
-            // Only update live if you want real-time filtering (can be heavy),
-            // otherwise attach to 'change' event instead of 'input'.
-            // For a smooth experience, we just update the text here.
+            state.maxPrice = val;
+            priceValue.textContent = val === 1000 ? "Up to $1000+" : `Up to $${val}`;
         });
 
-        priceRange.addEventListener("change", (e) => {
-            state.maxPrice = parseInt(e.target.value);
-            state.currentPage = 1;
-            updateURL();
-            renderCards();
-        }); typeFilterBtns.forEach(btn => {
+
+
+        typeFilterBtns.forEach(btn => {
             btn.addEventListener("click", () => {
                 const filter = btn.dataset.filter;
 
@@ -2201,8 +2235,8 @@
             state.regionFilter = "all";
             state.maxPrice = 1000;
 
-            priceRange.value = 1000;
-            priceDisplay.textContent = "1000";
+            if (priceRange) priceRange.value = 1000;
+            if (priceValue) priceValue.textContent = "Up to $1000+";
 
             [genderBtns, ageBtns, regionBtns].forEach(group => {
                 group.forEach(btn => {
@@ -2448,7 +2482,7 @@
             if (state.typeFilters.length > 0) params.set("types", state.typeFilters.join(","));
             if (state.licenseFilters.length > 0) params.set("licenses", state.licenseFilters.join(","));
             if (state.searchQuery) params.set("search", state.searchQuery);
-            if (state.maxPrice < 1000) params.set("price", state.maxPrice);
+            if (state.maxPrice < 1000) params.set("maxPrice", state.maxPrice);
             if (state.showShortlistOnly && state.shortlist.length > 0) params.set("selection", state.shortlist.join(","));
             if (state.isAdmin) params.set("admin", "true");
 
@@ -2468,10 +2502,8 @@
                 state.searchQuery = params.get("search");
                 searchInput.value = state.searchQuery;
             }
-            if (params.has("price")) {
-                state.maxPrice = parseInt(params.get("price"));
-                if (priceRange) priceRange.value = state.maxPrice;
-                if (priceDisplay) priceDisplay.textContent = state.maxPrice;
+            if (params.has("maxPrice")) {
+                state.maxPrice = parseInt(params.get("maxPrice"));
             }
             if (params.has("selection")) {
                 state.shortlist = params.get("selection").split(",");
@@ -2520,6 +2552,12 @@
                     }
                 });
             });
+
+            // Sync price slider
+            if (priceRange) {
+                priceRange.value = state.maxPrice;
+                priceValue.textContent = state.maxPrice === 1000 ? "Up to $1000+" : `Up to $${state.maxPrice}`;
+            }
         }
 
         /* === ADMIN TOOLS === */
