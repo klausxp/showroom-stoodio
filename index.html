@@ -1442,6 +1442,33 @@
                 padding: 12px 16px;
             }
         }
+
+        /* === ANIMACIÓN HEART DUST === */
+        .flying-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            color: #ef4444;
+            /* Rojo/Rosado premium */
+            animation: fly-to-cart 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes fly-to-cart {
+            0% {
+                transform: scale(1) translateY(0);
+                opacity: 0;
+            }
+
+            15% {
+                transform: scale(1.5) translateY(-15px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.2) translate(var(--dx), var(--dy));
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -1467,14 +1494,17 @@
                 </nav>
 
                 <button id="shortlistViewBtn" class="shortlist-btn">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
+                    <!-- El icono cambia según el Rol -->
+                    <span id="headerShortlistIcon">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </span>
                     <span id="shortlistCountText">Shortlist (0)</span>
                 </button>
             </div>
@@ -1845,21 +1875,28 @@
         ];
 
         /* === STATE === */
+        // Estado Inicial
         let state = {
-            searchQuery: "",
-            typeFilters: [],    // Array vacío asume "All"
-            licenseFilters: [], // Array vacío asume "All"
-            genderFilter: "all",
-            ageRangeFilter: "all",
-            regionFilter: "all",
-            shortlist: JSON.parse(localStorage.getItem('stoodio_shortlist')) || [], // Sync with LocalStorage on load
+            genderFilter: 'all',
+            ageRangeFilter: 'all',
+            regionFilter: 'all',
+            typeFilters: [],
+            licenseFilters: [],
+            searchQuery: '',
             showShortlistOnly: false,
+            shortlist: JSON.parse(localStorage.getItem('stoodio_shortlist')) || [], // Sync with LocalStorage on load
             currentPage: 1,
             itemsPerPage: 12,
             maxPrice: 1000,
-            isAdmin: false
+            isAdmin: false,
+            role: 'agency', // 'agency' o 'client'
+            isCuratedCatalog: false // Si es true, la BD se limita a lo enviado
         };
 
+        // Cache del DOM
+        const html = document.documentElement;
+        let originalModels = [...MODELS]; // Mantiene los 50 originales intactos
+        let filteredModels = [...MODELS];
         const gridEl = document.getElementById("showroom-grid");
         const searchInput = document.getElementById("searchInput");
         const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
@@ -1965,9 +2002,18 @@
                 let licBadgeText = model.license === "royalty-free" ? "Royalty Free" : "Available to License";
                 const inShortlist = state.shortlist.includes(model.id);
 
-                const iconSvg = inShortlist
-                    ? `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-                    : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+                let iconSvg = '';
+                if (state.role === 'client') {
+                    // Modo Cliente: Corazones
+                    iconSvg = inShortlist
+                        ? `<svg width="16" height="16" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`
+                        : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+                } else {
+                    // Modo Agencia: Plus y Check
+                    iconSvg = inShortlist
+                        ? `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+                        : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+                }
 
                 card.innerHTML = `
                     <div class="card-image-wrap">
@@ -1997,15 +2043,26 @@
                 const favBtn = card.querySelector('.fav-btn');
                 favBtn.onclick = (e) => {
                     e.stopPropagation();
-                    toggleShortlist(model.id);
+                    toggleShortlist(model.id, e.currentTarget);
                 };
 
                 gridEl.appendChild(card);
             });
 
-            // Update Header Counter
+            // Update Header Counter and Text
             if (shortlistCountText) {
-                shortlistCountText.textContent = `Shortlist (${state.shortlist.length})`;
+                const label = state.role === 'client' ? "My Selection" : "Shortlist";
+                shortlistCountText.textContent = `${label} (${state.shortlist.length})`;
+
+                // Update header icon if client
+                const headerIcon = document.getElementById("headerShortlistIcon");
+                if (headerIcon) {
+                    if (state.role === 'client') {
+                        headerIcon.innerHTML = `<svg width="18" height="18" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+                    } else {
+                        headerIcon.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+                    }
+                }
             }
 
             // Inject Integrated Sharing Tools if in Shortlist view
@@ -2061,9 +2118,26 @@
                     submitBtn.disabled = true;
                     submitBtn.textContent = "Processing...";
 
-                    // Generate Link
-                    updateURL();
-                    const shareLink = window.location.href;
+                    // Generate Link depending on Role
+                    const linkParams = new URLSearchParams();
+
+                    if (state.role === 'agency') {
+                        // Agencia manda a Cliente un Catálogo Restringido
+                        linkParams.set("role", "client");
+                        linkParams.set("catalog", state.shortlist.join(","));
+                    } else {
+                        // Cliente devuelve Selección a Agencia
+                        linkParams.set("role", "agency");
+                        if (state.isCuratedCatalog) {
+                            // Devuelve la ID del catálogo en el que estaba trabajando para contexto
+                            const currentIds = originalModels.map(m => m.id);
+                            linkParams.set("catalog_ref", currentIds.join(","));
+                        }
+                        linkParams.set("selection", state.shortlist.join(","));
+                    }
+
+                    const shareLinkBase = window.location.origin + window.location.pathname;
+                    const shareLink = `${shareLinkBase}?${linkParams.toString()}`;
 
                     // Simulated sending (as it's a static site)
                     // In a real scenario, here we call an API or EmailJS
@@ -2077,7 +2151,7 @@
                         submitBtn.style.background = "#059669";
 
                         // Simular log de envío de email
-                        console.group("📧 Email Sent to Client");
+                        console.group("📧 Email Sent to Client / Agency");
                         console.log("To:", email);
                         console.log("Message:", message || "(No personal message appended)");
                         console.log("Link:", shareLink);
@@ -2419,18 +2493,58 @@
         document.getElementById("galleryPrevBtn").addEventListener("click", () => {
             document.getElementById("modalGallery").scrollBy({ top: -120, behavior: 'smooth' });
         });
-
         document.getElementById("galleryNextBtn").addEventListener("click", () => {
             document.getElementById("modalGallery").scrollBy({ top: 120, behavior: 'smooth' });
         });
 
+        /* === LOGICA MICRO-ANIMACION === */
+        function triggerHeartDustAnimation(sourceElement) {
+            // Solo animar si es modo cliente
+            if (state.role !== 'client') return;
+
+            const rect = sourceElement.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            const targetEl = document.getElementById("shortlistViewBtn");
+            if (!targetEl) return;
+            const targetRect = targetEl.getBoundingClientRect();
+            const endX = targetRect.left + targetRect.width / 2;
+            const endY = targetRect.top + targetRect.height / 2;
+
+            const flyingHeart = document.createElement("div");
+            flyingHeart.className = "flying-heart";
+            flyingHeart.innerHTML = `<svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+
+            // Establecer posición inicial absoluta
+            flyingHeart.style.left = `${startX - 12}px`;
+            flyingHeart.style.top = `${startY - 12}px`;
+
+            // Establecer deltas para que CSS anime la trayectoria
+            const dx = endX - startX;
+            const dy = endY - startY;
+            flyingHeart.style.setProperty('--dx', `${dx}px`);
+            flyingHeart.style.setProperty('--dy', `${dy}px`);
+
+            document.body.appendChild(flyingHeart);
+
+            // Eliminar elemento al terminar animación
+            setTimeout(() => {
+                if (flyingHeart.parentNode) flyingHeart.parentNode.removeChild(flyingHeart);
+            }, 800);
+        }
+
         /* === SHORTLIST LOGIC === */
-        function toggleShortlist(id) {
+        function toggleShortlist(id, sourceElement = null) {
             const index = state.shortlist.indexOf(id);
             if (index > -1) {
                 state.shortlist.splice(index, 1);
             } else {
                 state.shortlist.push(id);
+                // Si agregamos y tenemos un sourceElement (el botón), lanzamos la animación
+                if (sourceElement) {
+                    triggerHeartDustAnimation(sourceElement);
+                }
             }
             localStorage.setItem('stoodio_shortlist', JSON.stringify(state.shortlist));
             updateURL();
@@ -2447,11 +2561,19 @@
 
                 if (isShortlisted) {
                     mFavBtn.classList.add("active");
-                    mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    if (state.role === 'client') {
+                        mFavBtn.innerHTML = `<svg width="16" height="16" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+                    } else {
+                        mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    }
                     if (mReqBtn) mReqBtn.textContent = "Remove from Shortlist";
                 } else {
                     mFavBtn.classList.remove("active");
-                    mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+                    if (state.role === 'client') {
+                        mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+                    } else {
+                        mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+                    }
                     if (mReqBtn) mReqBtn.textContent = "Add to Shortlist";
                 }
             }
@@ -2514,9 +2636,9 @@
         }
 
         // Initialize modal favorite click loop
-        document.getElementById("modalFavBtn").onclick = () => {
+        document.getElementById("modalFavBtn").onclick = (e) => {
             const currentId = document.getElementById("modalId").textContent;
-            toggleShortlist(currentId);
+            toggleShortlist(currentId, e.currentTarget);
         };
 
         /* === DEEP LINKING === */
@@ -2529,7 +2651,17 @@
             if (state.licenseFilters.length > 0) params.set("licenses", state.licenseFilters.join(","));
             if (state.searchQuery) params.set("search", state.searchQuery);
             if (state.maxPrice < 1000) params.set("maxPrice", state.maxPrice);
-            if (state.showShortlistOnly && state.shortlist.length > 0) params.set("selection", state.shortlist.join(","));
+
+            // Re-escribir estado natural en la barra del navegador (sin provocar loop de history)
+            if (state.role !== 'agency') params.set("role", state.role);
+            if (state.isCuratedCatalog) {
+                // Si el catálogo está curado, siempre debe estar en la URL
+                const currentIds = originalModels.map(m => m.id);
+                params.set("catalog", currentIds.join(","));
+            }
+            if (state.showShortlistOnly && state.shortlist.length > 0) {
+                params.set("selection", state.shortlist.join(","));
+            }
             if (state.isAdmin) params.set("admin", "true");
 
             const newURL = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
@@ -2538,6 +2670,16 @@
 
         function loadFromURL() {
             const params = new URLSearchParams(window.location.search);
+
+            if (params.has("role")) state.role = params.get("role");
+
+            if (params.has("catalog")) {
+                const catalogIds = params.get("catalog").split(",");
+                // El catálogo se restringe: la base de datos entera pasa a ser solo esos modelos
+                originalModels = originalModels.filter(m => catalogIds.includes(m.id));
+                filteredModels = [...originalModels];
+                state.isCuratedCatalog = true;
+            }
 
             if (params.has("gender")) state.genderFilter = params.get("gender");
             if (params.has("age")) state.ageRangeFilter = params.get("age");
@@ -2557,6 +2699,13 @@
                 if (catalogBtn) catalogBtn.classList.remove("active");
                 if (shortlistViewBtn) shortlistViewBtn.classList.add("active-view");
             }
+
+            // Adaptar UI según rol
+            if (state.role === 'client') {
+                const sLabel = document.getElementById('shortlistCounterLabel');
+                if (sLabel) sLabel.textContent = "My Selection";
+            }
+
             if (params.get("admin") === "true") {
                 state.isAdmin = true;
                 showAdminTools();
