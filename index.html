@@ -1475,7 +1475,7 @@
             }
 
             100% {
-                transform: scale(0.2) translate(var(--dx), var(--dy));
+                transform: translate(var(--dx), var(--dy)) scale(0.2);
                 opacity: 0;
             }
         }
@@ -2147,6 +2147,7 @@
                             linkParams.set("catalog-ref", currentIds.join(","));
                         }
                         linkParams.set("picks", state.shortlist.join(","));
+                        if (email) linkParams.set("client", email);
                     }
 
                     const shareLinkBase = window.location.origin + window.location.pathname;
@@ -2698,15 +2699,29 @@
             const viewParam = params.get("view");
             const roleParam = params.get("role");
 
+            // Evitar pre-selección residual: si es un link compartido, la selección parte de 0 
+            // a menos que contenga el parámetro 'picks' que la rellenará más adelante.
+            if (viewParam || roleParam) {
+                state.shortlist = [];
+            }
+
             if (viewParam === "client-curated") {
                 state.role = 'client';
                 state.isCuratedCatalog = true;
             } else if (viewParam === "client-browse") {
                 state.role = 'client';
             } else if (viewParam === "agency-review") {
-                // La Agencia recibe de vuelta la selección del Cliente: role agency (default)
-                // No cambiamos state.role, sigue siendo 'agency'
-                // Los picks se cargan más abajo en el bloque picksParam
+                // La Agencia recibe de vuelta la selección del Cliente
+                const clientEmail = params.get("client");
+                const headingEl = document.querySelector(".hero h1");
+                const subtitleEl = document.querySelector(".hero p");
+
+                if (headingEl) {
+                    headingEl.textContent = clientEmail ? `Selection from ${clientEmail}` : "Client Selection";
+                }
+                if (subtitleEl) {
+                    subtitleEl.textContent = "Review the models pre-selected by your client.";
+                }
             } else if (roleParam === 'client') {
                 // Retrocompatibilidad con el parámetro antiguo
                 state.role = 'client';
@@ -2789,7 +2804,7 @@
             // Sync price slider
             if (priceRange) {
                 priceRange.value = state.maxPrice;
-                priceValue.textContent = state.maxPrice === 1000 ? "Up to $1000+" : `Up to $${state.maxPrice}`;
+                priceValue.textContent = state.maxPrice === 1000 ? "Up to $1000+" : `Up to $${state.maxPrice} `;
             }
         }
 
@@ -2801,17 +2816,17 @@
             const adminTools = document.createElement("div");
             adminTools.id = "admin-tools-panel";
             adminTools.style.cssText = `
-                display: flex;
-                gap: 12px;
-                align-items: center;
-                background: #fdf2f2;
-                padding: 8px 16px;
-                border-radius: 99px;
-                border: 1px solid #fecaca;
-            `;
+                    display: flex;
+                    gap: 12px;
+                    align - items: center;
+                    background: #fdf2f2;
+                    padding: 8px 16px;
+                    border - radius: 99px;
+                    border: 1px solid #fecaca;
+                    `;
             adminTools.innerHTML = `
-                <span style="font-size: 11px; font-weight: 700; color: #991b1b; text-transform: uppercase;">Admin Mode</span>
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 10px; background: #991b1b;" id="copyClientLink">Copy Client Link</button>
+                        < span style = "font-size: 11px; font-weight: 700; color: #991b1b; text-transform: uppercase;" > Admin Mode</span >
+                            <button class="btn-outline" style="padding: 6px 14px; font-size: 10px; background: #991b1b;" id="copyClientLink">Copy Client Link</button>
             `;
             header.insertBefore(adminTools, header.querySelector(".header-nav-center"));
 
