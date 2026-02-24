@@ -370,6 +370,29 @@
             transition: border-color var(--transition-speed), background-color var(--transition-speed), box-shadow var(--transition-speed);
         }
 
+        .sort-select {
+            padding: 12px 36px 12px 20px;
+            border-radius: var(--radius-full);
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            appearance: none;
+            outline: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23111111%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            transition: all var(--transition-speed);
+        }
+
+        .sort-select:hover,
+        .sort-select:focus {
+            border-color: var(--color-text);
+            background-color: var(--color-surface);
+        }
+
         .filter-category {
             display: flex;
             align-items: center;
@@ -1398,6 +1421,14 @@
                         placeholder="Search by name...">
                 </div>
 
+                <!-- Sort Dropdown -->
+                <div class="sort-box">
+                    <select id="sortSelect" class="sort-select" aria-label="Sort models">
+                        <option value="price_desc">Recommended</option>
+                        <option value="price_asc">Price: Low to High</option>
+                    </select>
+                </div>
+
                 <!-- Advanced Filters Button -->
                 <button id="advancedFiltersBtn" class="advanced-filters-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -1711,14 +1742,17 @@
             genderFilter: "all",
             ageRangeFilter: "all",
             regionFilter: "all",
-            shortlist: [], // Reiniciar siempre vacío al cargar como solicitó el usuario
+            shortlist: JSON.parse(localStorage.getItem('stoodio_shortlist')) || [], // Sync with LocalStorage on load
             showShortlistOnly: false,
             currentPage: 1,
-            itemsPerPage: 12
+            itemsPerPage: 12,
+            sortBy: "price_desc", // Default: Caro primero
+            isAdmin: false
         };
 
         const gridEl = document.getElementById("showroom-grid");
         const searchInput = document.getElementById("searchInput");
+        const sortSelect = document.getElementById("sortSelect");
         const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
         const licenseFilterBtns = document.querySelectorAll("#licenseFilters .pill");
 
@@ -1774,6 +1808,18 @@
                 }
 
                 return matchesSearch && matchesType && matchesLicense && matchesGender && matchesRegion && matchesAge;
+            });
+
+            // Sort logic: Caro primero por defecto o según estado
+            filtered.sort((a, b) => {
+                const priceA = a.price || 0;
+                const priceB = b.price || 0;
+
+                if (state.sortBy === "price_asc") {
+                    return priceA - priceB;
+                }
+                // default price_desc
+                return priceB - priceA;
             });
 
             // Grid UI
@@ -1916,6 +1962,14 @@
         searchInput.addEventListener("input", (e) => {
             state.searchQuery = e.target.value;
             state.currentPage = 1; // Reset to page 1 on search
+            updateURL();
+            renderCards();
+        });
+
+        sortSelect.addEventListener("change", (e) => {
+            state.sortBy = e.target.value;
+            state.currentPage = 1;
+            updateURL();
             renderCards();
         });
 
@@ -1943,6 +1997,7 @@
                 }
 
                 state.currentPage = 1;
+                updateURL();
                 renderCards();
             });
         });
@@ -1971,6 +2026,7 @@
                 }
 
                 state.currentPage = 1;
+                updateURL();
                 renderCards();
             });
         });
@@ -2023,6 +2079,7 @@
 
         applyFiltersBtn.addEventListener("click", () => {
             state.currentPage = 1;
+            updateURL();
             renderCards();
             closeDrawer();
         });
@@ -2030,6 +2087,7 @@
         clearFiltersBtn.addEventListener("click", () => {
             resetAdvancedFiltersUI();
             state.currentPage = 1;
+            updateURL();
             renderCards();
             closeDrawer();
         });
@@ -2157,6 +2215,7 @@
                 state.shortlist.push(id);
             }
             localStorage.setItem('stoodio_shortlist', JSON.stringify(state.shortlist));
+            updateURL();
 
             // Sync UI
             renderCards();
@@ -2203,6 +2262,7 @@
             if (shortlistViewBtn) shortlistViewBtn.classList.remove("active-view");
 
             renderCards();
+            updateURL();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -2230,6 +2290,7 @@
                 licenseFilterBtns[0].classList.add("active");
 
                 renderCards();
+                updateURL();
                 window.scrollTo({ top: document.getElementById('showroom-grid').offsetTop - 120, behavior: 'smooth' });
             });
         }
@@ -2240,8 +2301,126 @@
             toggleShortlist(currentId);
         };
 
+        /* === DEEP LINKING === */
+        function updateURL() {
+            const params = new URLSearchParams();
+            if (state.genderFilter !== "all") params.set("gender", state.genderFilter);
+            if (state.ageRangeFilter !== "all") params.set("age", state.ageRangeFilter);
+            if (state.regionFilter !== "all") params.set("region", state.regionFilter);
+            if (state.typeFilters.length > 0) params.set("types", state.typeFilters.join(","));
+            if (state.licenseFilters.length > 0) params.set("licenses", state.licenseFilters.join(","));
+            if (state.searchQuery) params.set("search", state.searchQuery);
+            if (state.sortBy !== "price_desc") params.set("sort", state.sortBy);
+            if (state.showShortlistOnly && state.shortlist.length > 0) params.set("selection", state.shortlist.join(","));
+            if (state.isAdmin) params.set("admin", "true");
+
+            const newURL = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
+            window.history.replaceState({}, "", newURL);
+        }
+
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.has("gender")) state.genderFilter = params.get("gender");
+            if (params.has("age")) state.ageRangeFilter = params.get("age");
+            if (params.has("region")) state.regionFilter = params.get("region");
+            if (params.has("types")) state.typeFilters = params.get("types").split(",");
+            if (params.has("licenses")) state.licenseFilters = params.get("licenses").split(",");
+            if (params.has("search")) {
+                state.searchQuery = params.get("search");
+                searchInput.value = state.searchQuery;
+            }
+            if (params.has("sort")) {
+                state.sortBy = params.get("sort");
+                if (sortSelect) sortSelect.value = state.sortBy;
+            }
+            if (params.has("selection")) {
+                state.shortlist = params.get("selection").split(",");
+                state.showShortlistOnly = true;
+                if (catalogBtn) catalogBtn.classList.remove("active");
+                if (shortlistViewBtn) shortlistViewBtn.classList.add("active-view");
+            }
+            if (params.get("admin") === "true") {
+                state.isAdmin = true;
+                showAdminTools();
+            }
+
+            // Update UI components
+            syncFiltersUI();
+            renderCards();
+        }
+
+        function syncFiltersUI() {
+            // Update pills
+            typeFilterBtns.forEach(btn => {
+                const isActive = state.typeFilters.includes(btn.dataset.filter) || (btn.dataset.filter === "all" && state.typeFilters.length === 0);
+                if (isActive) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+            licenseFilterBtns.forEach(btn => {
+                const isActive = state.licenseFilters.includes(btn.dataset.filter) || (btn.dataset.filter === "all" && state.licenseFilters.length === 0);
+                if (isActive) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+
+            // Sync drawer pills
+            [genderBtns, ageBtns, regionBtns].forEach(group => {
+                group.forEach(btn => {
+                    const type = btn.dataset.gender ? "genderFilter" : btn.dataset.age ? "ageRangeFilter" : "regionFilter";
+                    const val = btn.dataset.gender || btn.dataset.age || btn.dataset.region;
+                    if (state[type] === val) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                });
+            });
+        }
+
+        /* === ADMIN TOOLS === */
+        function showAdminTools() {
+            const header = document.querySelector(".header-content");
+            if (document.getElementById("admin-tools-panel")) return;
+
+            const adminTools = document.createElement("div");
+            adminTools.id = "admin-tools-panel";
+            adminTools.style.cssText = `
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                background: #fdf2f2;
+                padding: 8px 16px;
+                border-radius: 99px;
+                border: 1px solid #fecaca;
+            `;
+            adminTools.innerHTML = `
+                <span style="font-size: 11px; font-weight: 700; color: #991b1b; text-transform: uppercase;">Admin Mode</span>
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 10px; background: #991b1b;" id="copyClientLink">Copy Client Link</button>
+            `;
+            header.insertBefore(adminTools, header.querySelector(".header-nav-center"));
+
+            document.getElementById("copyClientLink").onclick = () => {
+                updateURL();
+                navigator.clipboard.writeText(window.location.href);
+                const btn = document.getElementById("copyClientLink");
+                const originalText = btn.textContent;
+                btn.textContent = "Link Copied!";
+                btn.style.background = "#059669";
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = "#991b1b";
+                }, 2000);
+            };
+        }
+
         // Initialize
-        renderCards();
+        loadFromURL();
 
     </script>
 </body>
