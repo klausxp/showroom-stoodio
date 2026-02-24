@@ -968,6 +968,22 @@
             right: 0;
         }
 
+        .drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 12px;
+            margin-right: -12px;
+        }
+
+        .drawer-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .drawer-content::-webkit-scrollbar-thumb {
+            background-color: var(--color-border);
+            border-radius: var(--radius-full);
+        }
+
         .drawer-header {
             display: flex;
             justify-content: space-between;
@@ -1031,6 +1047,54 @@
             background-color: var(--color-text);
             color: white;
             border-color: var(--color-text);
+        }
+
+        /* Price Slider Styles */
+        .price-slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .price-slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-slider-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .price-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--color-border);
+            outline: none;
+            margin: 10px 0;
+        }
+
+        .price-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-text);
+            cursor: pointer;
+            border: 2px solid var(--color-bg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s ease;
+        }
+
+        .price-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
         }
 
         .drawer-footer {
@@ -1748,7 +1812,7 @@
             showShortlistOnly: false,
             currentPage: 1,
             itemsPerPage: 12,
-            sortBy: "price_desc", // Default: Caro primero
+            maxPrice: 1000,
             isAdmin: false
         };
 
@@ -1756,7 +1820,9 @@
         const searchInput = document.getElementById("searchInput");
         const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
         const licenseFilterBtns = document.querySelectorAll("#licenseFilters .pill");
-        const sortBtns = document.querySelectorAll("#sortOptions .drawer-option-pill");
+
+        const priceRange = document.getElementById("priceRange");
+        const priceDisplay = document.getElementById("priceDisplay");
 
         const advancedFiltersBtn = document.getElementById("advancedFiltersBtn");
         const filtersOverlay = document.getElementById("filtersOverlay");
@@ -1809,7 +1875,11 @@
                     }
                 }
 
-                return matchesSearch && matchesType && matchesLicense && matchesGender && matchesRegion && matchesAge;
+                // Price Filter
+                const modelPrice = model.price || 0;
+                const matchesPrice = state.maxPrice >= 1000 ? true : modelPrice <= state.maxPrice;
+
+                return matchesSearch && matchesType && matchesLicense && matchesGender && matchesRegion && matchesAge && matchesPrice;
             });
 
             // Sort logic: Caro primero por defecto o según estado
@@ -2023,9 +2093,21 @@
             renderCards();
         });
 
+        priceRange.addEventListener("input", (e) => {
+            const val = parseInt(e.target.value);
+            priceDisplay.textContent = val >= 1000 ? "1000" : val;
 
+            // Only update live if you want real-time filtering (can be heavy),
+            // otherwise attach to 'change' event instead of 'input'.
+            // For a smooth experience, we just update the text here.
+        });
 
-        typeFilterBtns.forEach(btn => {
+        priceRange.addEventListener("change", (e) => {
+            state.maxPrice = parseInt(e.target.value);
+            state.currentPage = 1;
+            updateURL();
+            renderCards();
+        }); typeFilterBtns.forEach(btn => {
             btn.addEventListener("click", () => {
                 const filter = btn.dataset.filter;
 
@@ -2112,13 +2194,15 @@
         handleDrawerPillClick(genderBtns, "genderFilter");
         handleDrawerPillClick(ageBtns, "ageRangeFilter");
         handleDrawerPillClick(regionBtns, "regionFilter");
-        handleDrawerPillClick(sortBtns, "sortBy", "sort");
 
         const resetAdvancedFiltersUI = () => {
             state.genderFilter = "all";
             state.ageRangeFilter = "all";
             state.regionFilter = "all";
-            state.sortBy = "price_desc";
+            state.maxPrice = 1000;
+
+            priceRange.value = 1000;
+            priceDisplay.textContent = "1000";
 
             [genderBtns, ageBtns, regionBtns].forEach(group => {
                 group.forEach(btn => {
@@ -2128,13 +2212,6 @@
                         btn.classList.add("active");
                     }
                 });
-            });
-
-            sortBtns.forEach(btn => {
-                btn.classList.remove("active");
-                if (btn.getAttribute("data-sort") === "price_desc") {
-                    btn.classList.add("active");
-                }
             });
         };
 
@@ -2371,7 +2448,7 @@
             if (state.typeFilters.length > 0) params.set("types", state.typeFilters.join(","));
             if (state.licenseFilters.length > 0) params.set("licenses", state.licenseFilters.join(","));
             if (state.searchQuery) params.set("search", state.searchQuery);
-            if (state.sortBy !== "price_desc") params.set("sort", state.sortBy);
+            if (state.maxPrice < 1000) params.set("price", state.maxPrice);
             if (state.showShortlistOnly && state.shortlist.length > 0) params.set("selection", state.shortlist.join(","));
             if (state.isAdmin) params.set("admin", "true");
 
@@ -2391,8 +2468,10 @@
                 state.searchQuery = params.get("search");
                 searchInput.value = state.searchQuery;
             }
-            if (params.has("sort")) {
-                state.sortBy = params.get("sort");
+            if (params.has("price")) {
+                state.maxPrice = parseInt(params.get("price"));
+                if (priceRange) priceRange.value = state.maxPrice;
+                if (priceDisplay) priceDisplay.textContent = state.maxPrice;
             }
             if (params.has("selection")) {
                 state.shortlist = params.get("selection").split(",");
@@ -2440,15 +2519,6 @@
                         btn.classList.remove("active");
                     }
                 });
-            });
-
-            // Sync sort pills
-            sortBtns.forEach(btn => {
-                if (state.sortBy === btn.dataset.sort) {
-                    btn.classList.add("active");
-                } else {
-                    btn.classList.remove("active");
-                }
             });
         }
 
