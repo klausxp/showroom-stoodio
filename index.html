@@ -2068,6 +2068,7 @@
                     // Simulated sending (as it's a static site)
                     // In a real scenario, here we call an API or EmailJS
                     setTimeout(() => {
+                        form.style.display = "none"; // Ocultar formulario al éxito
                         statusMsg.style.display = "block";
                         statusMsg.style.color = "#059669";
                         statusMsg.textContent = `✓ Selection successfully sent to ${email}`;
@@ -2112,7 +2113,11 @@
                             // Limpiar campos
                             document.getElementById("clientEmail").value = "";
                             document.getElementById("clientMessage").value = "";
-                            // NO ocultamos el link generado, lo dejamos visible para el usuario hasta que cierre/limpie la vista.
+
+                            // Restaurar vista
+                            form.style.display = "flex";
+                            const tempLinkContainer = document.getElementById("shareLinkContainer");
+                            if (tempLinkContainer) tempLinkContainer.style.display = "none";
                         }, 4000);
                     }, 1200);
                 };
