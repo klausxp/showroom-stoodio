@@ -55,6 +55,10 @@
         }
 
         /* === RESET & BASE === */
+        html {
+            scroll-behavior: smooth;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -173,6 +177,78 @@
             background-color: var(--color-accent-hover);
         }
 
+        .header-nav-link {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-meta);
+            position: relative;
+            padding-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .header-nav-link:hover,
+        .header-nav-link.active {
+            color: var(--color-text);
+        }
+
+        .header-nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-text);
+            transition: width var(--transition-speed) ease;
+        }
+
+        .header-nav-link:hover::after,
+        .header-nav-link.active::after {
+            width: 100%;
+        }
+
+        .header-nav-center {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .shortlist-btn {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-bg);
+            background-color: var(--color-text);
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--color-text);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shortlist-btn:hover {
+            background-color: transparent;
+            color: var(--color-text);
+        }
+
+        .shortlist-btn.active-view {
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .header-nav-center {
+                display: none;
+            }
+        }
+
         /* === HERO SECTION === */
         .hero {
             padding-top: 50px;
@@ -222,16 +298,47 @@
             margin-bottom: 40px;
         }
 
-        .filters-group {
+        .filters-left,
+        .filters-right {
             display: flex;
             gap: 32px;
             align-items: center;
             flex-wrap: wrap;
         }
 
+        .filters-right {
+            gap: 16px;
+        }
+
+        .advanced-filters-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: var(--radius-full);
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .advanced-filters-btn:hover {
+            border-color: var(--color-text);
+            background-color: var(--color-surface);
+        }
+
+        .advanced-filters-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--color-text-meta);
+        }
+
         .search-box {
             position: relative;
-            width: 320px;
+            width: 280px;
         }
 
         .search-icon {
@@ -482,8 +589,10 @@
             background: none;
             border: none;
             font-family: var(--font-body);
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
             cursor: pointer;
             padding: 0;
             white-space: nowrap;
@@ -502,13 +611,13 @@
         }
 
         .fav-btn.active {
-            color: #ef4444;
-            /* Rojo para favoritos */
+            color: #10B981;
+            /* Verde esmeralda (#10B981) sugerido por el usuario */
         }
 
         .fav-btn.active svg {
-            fill: #ef4444;
-            stroke: #ef4444;
+            fill: #10B981;
+            stroke: #10B981;
         }
 
 
@@ -797,7 +906,292 @@
             }
         }
 
-        /* === PAGINATION === */
+        /* === ADVANCED FILTERS DRAWER === */
+        .filters-drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .filters-drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .filters-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: var(--color-bg);
+            z-index: 2001;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .filters-drawer-overlay.active .filters-drawer {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .drawer-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .drawer-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text);
+            padding: 8px;
+            margin-right: -8px;
+        }
+
+        .drawer-section {
+            margin-bottom: 32px;
+        }
+
+        .drawer-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-meta);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .drawer-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .drawer-option-pill {
+            padding: 10px 18px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-light);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .drawer-option-pill:hover {
+            border-color: var(--color-text);
+            color: var(--color-text);
+        }
+
+        .drawer-option-pill.active {
+            background-color: var(--color-text);
+            color: white;
+            border-color: var(--color-text);
+        }
+
+        .drawer-footer {
+            margin-top: auto;
+            display: flex;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .drawer-footer .btn-primary {
+            flex: 1;
+        }
+
+        .drawer-footer .btn-secondary {
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--color-border);
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* === CUSTOM MODELS SECTION === */
+        .custom-models-section {
+            padding: 100px 0;
+            border-top: 1px solid var(--color-border);
+            margin-top: 60px;
+        }
+
+        .custom-models-header {
+            text-align: center;
+            margin-bottom: 64px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .custom-models-header h2 {
+            font-family: var(--font-body);
+            font-size: clamp(2rem, 4.5vw, 4.5rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            color: var(--color-text);
+            line-height: 1;
+        }
+
+        .custom-models-header p {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            color: var(--color-text-light);
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .custom-cards-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .custom-cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .custom-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 24px;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .custom-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.04);
+            border-color: var(--color-border-focus);
+        }
+
+        .custom-label {
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-meta);
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .custom-card h3 {
+            font-family: var(--font-body);
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: var(--color-text);
+        }
+
+        .custom-desc {
+            font-size: 16px;
+            color: var(--color-text-light);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .custom-process {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--color-text);
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .step-text strong {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--color-text);
+        }
+
+        .step-text span {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--color-text-meta);
+            line-height: 1.5;
+        }
+
+        .custom-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 32px;
+            border-top: 1px solid var(--color-border);
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .custom-price-tag {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--color-border);
+        }
+
         .pagination {
             display: flex;
             justify-content: center;
@@ -881,6 +1275,10 @@
             .info-grid {
                 gap: 12px;
             }
+
+            .custom-cards-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 600px) {
@@ -924,15 +1322,33 @@
     <!-- === HEADER === -->
     <header class="header">
         <div class="container header-content">
-            <button class="logo-area" id="logoLink" style="background:none; border:none; padding:0; cursor:pointer;">
-                <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo">
-                <div class="tagline">Model Showroom</div>
-            </button>
-            <div class="header-actions" style="display: flex; gap: 24px; align-items: center;">
-                <button id="homeMenuBtn" class="header-nav-link active">Main menu</button>
-                <button id="favViewBtn" class="header-nav-link">My favorites</button>
-                <a href="mailto:sales@stoodio.ai?subject=Custom%20Model%20Request" class="header-nav-link">Custom
-                    Model</a>
+            <!-- Left: Identity & Reset -->
+            <div class="header-left">
+                <button class="logo-area" id="logoLink" style="background:none; border:none; padding:0; cursor:pointer;"
+                    aria-label="Reset and go to top">
+                    <img src="Logo Stoodio.png" alt="Stoodio.AI" class="logo">
+                    <div class="tagline">Model Showroom</div>
+                </button>
+            </div>
+
+            <!-- Right: Navigation & B2B Action -->
+            <div class="header-right" style="display: flex; align-items: center; gap: 48px;">
+                <nav class="header-nav-center">
+                    <button id="catalogBtn" class="header-nav-link active">Catalog</button>
+                    <a href="#custom-models" class="header-nav-link">Custom Models</a>
+                </nav>
+
+                <button id="shortlistViewBtn" class="shortlist-btn">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span id="shortlistCountText">Shortlist (0)</span>
+                </button>
             </div>
         </div>
     </header>
@@ -948,19 +1364,7 @@
     <!-- === CONTROLS === -->
     <section class="controls-section container">
         <div class="controls-wrapper">
-
-            <div class="filters-group">
-                <!-- Search -->
-                <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" id="searchInput" name="search" autocomplete="off" class="search-input"
-                        placeholder="Search by name...">
-                </div>
-
+            <div class="filters-left">
                 <!-- Type Filter -->
                 <div class="filter-category">
                     <span class="filter-label">Subject:</span>
@@ -982,16 +1386,35 @@
                 </div>
             </div>
 
-            <!-- Custom Model CTA -->
-            <div class="custom-model-cta">
-                <div class="custom-model-texts">
-                    <span class="custom-title">Need a custom model?</span>
-                    <span class="custom-subtitle">Create your own Avatar or bring your Digital Twin</span>
+            <div class="filters-right">
+                <!-- Search -->
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" name="search" autocomplete="off" class="search-input"
+                        placeholder="Search by name...">
                 </div>
-                <a href="mailto:sales@stoodio.ai?subject=Custom%20Model%20Request" class="custom-link">Talk to us
-                    &rarr;</a>
-            </div>
 
+                <!-- Advanced Filters Button -->
+                <button id="advancedFiltersBtn" class="advanced-filters-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                    </svg>
+                    Filters
+                </button>
+            </div>
         </div>
     </section>
 
@@ -1007,7 +1430,157 @@
         </div>
     </main>
 
-    <!-- === FOOTER === -->
+    <!-- === CUSTOM MODELS SECTION === -->
+    <section id="custom-models" class="custom-models-section container">
+        <div class="custom-models-header">
+            <h2>Custom Models</h2>
+            <p>Don't see exactly what you need? We build bespoke AI talent tailored to your brand's unique requirements.
+            </p>
+        </div>
+
+        <div class="custom-cards-container">
+            <!-- Card 1: Custom Avatars -->
+            <div class="custom-card">
+                <div class="custom-card-content">
+                    <span class="custom-label">Created from scratch</span>
+                    <h3>Custom Avatars</h3>
+                    <p class="custom-desc">We design and generate a unique, exclusive AI face based on your exact
+                        specifications and brand guidelines.</p>
+
+                    <div class="custom-process">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">
+                                <strong>Briefing & Concept</strong>
+                                <span>Tell us your vision, demographic needs, and aesthetic requirements.</span>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">
+                                <strong>Creation & Iteration</strong>
+                                <span>We generate initial concepts and refine them based on your feedback.</span>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-text">
+                                <strong>Final Delivery</strong>
+                                <span>Your exclusive, brand-owned Avatar is ready for all your campaigns.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-card-footer">
+                    <span class="custom-price-tag">Custom Pricing</span>
+                    <a href="mailto:sales@stoodio.ai?subject=Custom%20Avatar%20Request" class="btn-primary">Start your
+                        Custom Project</a>
+                </div>
+            </div>
+
+            <!-- Card 2: Custom Casting -->
+            <div class="custom-card">
+                <div class="custom-card-content">
+                    <span class="custom-label">Bespoke Digital Twins</span>
+                    <h3>Custom Casting</h3>
+                    <p class="custom-desc">Bring your own talent or let us find the perfect real-world model to digitize
+                        exclusively for your brand.</p>
+
+                    <div class="custom-process">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">
+                                <strong>Scouting / Proposal</strong>
+                                <span>We cast the ideal model through agencies, or you provide your own talent.</span>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">
+                                <strong>Capture Session</strong>
+                                <span>We scan and digitize the talent using our state-of-the-art studio setup.</span>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-text">
+                                <strong>Integration</strong>
+                                <span>Your new Digital Twin is processed, rigged, and ready for production.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-card-footer">
+                    <span class="custom-price-tag">Custom Pricing</span>
+                    <a href="mailto:sales@stoodio.ai?subject=Custom%20Casting%20Request" class="btn-primary">Talk to our
+                        team</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- === ADVANCED FILTERS DRAWER === -->
+    <div class="filters-drawer-overlay" id="filtersOverlay">
+        <div class="filters-drawer">
+            <div class="drawer-header">
+                <h2>Filters</h2>
+                <button class="drawer-close" id="closeDrawer">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="drawer-content">
+                <!-- Gender Section -->
+                <div class="drawer-section">
+                    <span class="drawer-section-title">Gender</span>
+                    <div class="drawer-options" id="genderOptions">
+                        <button class="drawer-option-pill active" data-gender="all">All</button>
+                        <button class="drawer-option-pill" data-gender="Female">Female</button>
+                        <button class="drawer-option-pill" data-gender="Male">Male</button>
+                        <button class="drawer-option-pill" data-gender="Non-binary">Non-binary</button>
+                    </div>
+                </div>
+
+                <!-- Age Range Section -->
+                <div class="drawer-section">
+                    <span class="drawer-section-title">Age Range</span>
+                    <div class="drawer-options" id="ageOptions">
+                        <button class="drawer-option-pill active" data-age="all">All</button>
+                        <button class="drawer-option-pill" data-age="teens">Teens (< 20)</button>
+                                <button class="drawer-option-pill" data-age="20s">20s (20-29)</button>
+                                <button class="drawer-option-pill" data-age="30s">30s (30-39)</button>
+                                <button class="drawer-option-pill" data-age="40s">40s (40-49)</button>
+                                <button class="drawer-option-pill" data-age="50+">50+ (Mature)</button>
+                    </div>
+                </div>
+
+                <!-- Region Section -->
+                <div class="drawer-section">
+                    <span class="drawer-section-title">Location / Region</span>
+                    <div class="drawer-options" id="regionOptions">
+                        <button class="drawer-option-pill active" data-region="all">All</button>
+                        <button class="drawer-option-pill" data-region="North America">North America</button>
+                        <button class="drawer-option-pill" data-region="Latin America">Latin America</button>
+                        <button class="drawer-option-pill" data-region="Europe">Europe</button>
+                        <button class="drawer-option-pill" data-region="Middle East & Africa">Middle East &
+                            Africa</button>
+                        <button class="drawer-option-pill" data-region="Asia Pacific">Asia Pacific</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drawer-footer">
+                <button class="btn-secondary" id="clearFiltersBtn">Clear All</button>
+                <button class="btn-primary" id="applyFiltersBtn">Show Results</button>
+            </div>
+        </div>
+    </div>
     <footer class="footer">
         <div class="container">
             &copy; 2026 Stoodio.AI &middot; All rights reserved &middot; klausfreiberg@modelmanagement.com
@@ -1104,30 +1677,30 @@
     <script>
         /* === MOCK DATA === */
         const MODELS = [
-            { id: "ST-001", firstName: "Sofia", lastName: "Reyes", type: "Avatar", gender: "Female", age: 24, country: "Spain", countryCode: "es", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-002", firstName: "Marcus", lastName: "Chen", type: "Digital Twin", gender: "Male", age: 28, country: "China", countryCode: "cn", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-003", firstName: "Elena", lastName: "Vassiliev", type: "Avatar", gender: "Female", age: 26, country: "Russia", countryCode: "ru", license: "paid", price: 499, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-004", firstName: "David", lastName: "Okafor", type: "Digital Twin", gender: "Male", age: 31, country: "Nigeria", countryCode: "ng", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-005", firstName: "Yuri", lastName: "Kato", type: "Avatar", gender: "Female", age: 22, country: "Japan", countryCode: "jp", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1550927407-50e2bd128b81?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-006", firstName: "Anna", lastName: "Svensson", type: "Digital Twin", gender: "Female", age: 25, country: "Sweden", countryCode: "se", license: "paid", price: 599, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-007", firstName: "Julian", lastName: "Silva", type: "Avatar", gender: "Male", age: 27, country: "Brazil", countryCode: "br", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-008", firstName: "Chloe", lastName: "Dubois", type: "Digital Twin", gender: "Female", age: 23, country: "France", countryCode: "fr", license: "paid", price: 399, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-009", firstName: "Liam", lastName: "O'Connor", type: "Avatar", gender: "Male", age: 29, country: "Ireland", countryCode: "ie", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-010", firstName: "Zara", lastName: "Ali", type: "Digital Twin", gender: "Female", age: 24, country: "Pakistan", countryCode: "pk", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-011", firstName: "Nadia", lastName: "Popova", type: "Avatar", gender: "Female", age: 27, country: "Ukraine", countryCode: "ua", license: "paid", price: 450, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-012", firstName: "Ethan", lastName: "Wright", type: "Digital Twin", gender: "Male", age: 26, country: "United Kingdom", countryCode: "gb", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-013", firstName: "Isabella", lastName: "Russo", type: "Avatar", gender: "Female", age: 21, country: "Italy", countryCode: "it", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-014", firstName: "Mateo", lastName: "Costa", type: "Digital Twin", gender: "Male", age: 30, country: "Portugal", countryCode: "pt", license: "paid", price: 349, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-015", firstName: "Lina", lastName: "Kovalenko", type: "Avatar", gender: "Female", age: 28, country: "Ukraine", countryCode: "ua", license: "paid", price: 550, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-016", firstName: "Arjun", lastName: "Desai", type: "Digital Twin", gender: "Male", age: 29, country: "India", countryCode: "in", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-017", firstName: "Mia", lastName: "Tan", type: "Avatar", gender: "Female", age: 23, country: "Singapore", countryCode: "sg", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-018", firstName: "Lucas", lastName: "Muller", type: "Digital Twin", gender: "Male", age: 26, country: "Germany", countryCode: "de", license: "paid", price: 420, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-019", firstName: "Olivia", lastName: "Smith", type: "Avatar", gender: "Female", age: 25, country: "USA", countryCode: "us", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-020", firstName: "Noah", lastName: "Williams", type: "Digital Twin", gender: "Male", age: 27, country: "USA", countryCode: "us", license: "paid", price: 380, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-021", firstName: "Aria", lastName: "Jansen", type: "Avatar", gender: "Female", age: 24, country: "Netherlands", countryCode: "nl", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-022", firstName: "Elijah", lastName: "Brown", type: "Digital Twin", gender: "Male", age: 32, country: "Canada", countryCode: "ca", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-023", firstName: "Zoe", lastName: "Martin", type: "Avatar", gender: "Female", age: 25, country: "France", countryCode: "fr", license: "paid", price: 600, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
-            { id: "ST-024", firstName: "Leo", lastName: "Garcia", type: "Digital Twin", gender: "Male", age: 29, country: "Mexico", countryCode: "mx", license: "paid", price: 310, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true }
+            { id: "ST-001", firstName: "Sofia", lastName: "Reyes", type: "Avatar", gender: "Female", age: 24, country: "Spain", countryCode: "es", region: "Europe", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-002", firstName: "Marcus", lastName: "Chen", type: "Digital Twin", gender: "Male", age: 28, country: "China", countryCode: "cn", region: "Asia Pacific", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-003", firstName: "Elena", lastName: "Vassiliev", type: "Avatar", gender: "Female", age: 26, country: "Russia", countryCode: "ru", region: "Europe", license: "paid", price: 499, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-004", firstName: "David", lastName: "Okafor", type: "Digital Twin", gender: "Male", age: 31, country: "Nigeria", countryCode: "ng", region: "Middle East & Africa", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-005", firstName: "Yuri", lastName: "Kato", type: "Avatar", gender: "Female", age: 22, country: "Japan", countryCode: "jp", region: "Asia Pacific", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1550927407-50e2bd128b81?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-006", firstName: "Anna", lastName: "Svensson", type: "Digital Twin", gender: "Female", age: 25, country: "Sweden", countryCode: "se", region: "Europe", license: "paid", price: 599, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-007", firstName: "Julian", lastName: "Silva", type: "Avatar", gender: "Male", age: 27, country: "Brazil", countryCode: "br", region: "Latin America", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-008", firstName: "Chloe", lastName: "Dubois", type: "Digital Twin", gender: "Female", age: 23, country: "France", countryCode: "fr", region: "Europe", license: "paid", price: 399, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-009", firstName: "Liam", lastName: "O'Connor", type: "Avatar", gender: "Male", age: 29, country: "Ireland", countryCode: "ie", region: "Europe", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-010", firstName: "Zara", lastName: "Ali", type: "Digital Twin", gender: "Female", age: 24, country: "Pakistan", countryCode: "pk", region: "Asia Pacific", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-011", firstName: "Nadia", lastName: "Popova", type: "Avatar", gender: "Female", age: 27, country: "Ukraine", countryCode: "ua", region: "Europe", license: "paid", price: 450, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-012", firstName: "Ethan", lastName: "Wright", type: "Digital Twin", gender: "Male", age: 26, country: "United Kingdom", countryCode: "gb", region: "Europe", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-013", firstName: "Isabella", lastName: "Russo", type: "Avatar", gender: "Female", age: 21, country: "Italy", countryCode: "it", region: "Europe", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-014", firstName: "Mateo", lastName: "Costa", type: "Digital Twin", gender: "Male", age: 30, country: "Portugal", countryCode: "pt", region: "Europe", license: "paid", price: 349, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-015", firstName: "Lina", lastName: "Kovalenko", type: "Avatar", gender: "Female", age: 28, country: "Ukraine", countryCode: "ua", region: "Europe", license: "paid", price: 550, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-016", firstName: "Arjun", lastName: "Desai", type: "Digital Twin", gender: "Male", age: 29, country: "India", countryCode: "in", region: "Asia Pacific", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-017", firstName: "Mia", lastName: "Tan", type: "Avatar", gender: "Female", age: 23, country: "Singapore", countryCode: "sg", region: "Asia Pacific", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-018", firstName: "Lucas", lastName: "Muller", type: "Digital Twin", gender: "Male", age: 26, country: "Germany", countryCode: "de", region: "Europe", license: "paid", price: 420, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-019", firstName: "Olivia", lastName: "Smith", type: "Avatar", gender: "Female", age: 25, country: "USA", countryCode: "us", region: "North America", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-020", firstName: "Noah", lastName: "Williams", type: "Digital Twin", gender: "Male", age: 27, country: "USA", countryCode: "us", region: "North America", license: "paid", price: 380, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-021", firstName: "Aria", lastName: "Jansen", type: "Avatar", gender: "Female", age: 24, country: "Netherlands", countryCode: "nl", region: "Europe", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-022", firstName: "Elijah", lastName: "Brown", type: "Digital Twin", gender: "Male", age: 32, country: "Canada", countryCode: "ca", region: "North America", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-023", firstName: "Zoe", lastName: "Martin", type: "Avatar", gender: "Female", age: 25, country: "France", countryCode: "fr", region: "Europe", license: "paid", price: 600, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "ST-024", firstName: "Leo", lastName: "Garcia", type: "Digital Twin", gender: "Male", age: 29, country: "Mexico", countryCode: "mx", region: "Latin America", license: "paid", price: 310, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true }
         ];
 
         /* === STATE === */
@@ -1135,8 +1708,11 @@
             searchQuery: "",
             typeFilters: [],    // Array vacío asume "All"
             licenseFilters: [], // Array vacío asume "All"
-            favorites: JSON.parse(localStorage.getItem('stoodio_favorites') || '[]'),
-            showFavoritesOnly: false,
+            genderFilter: "all",
+            ageRangeFilter: "all",
+            regionFilter: "all",
+            shortlist: [], // Reiniciar siempre vacío al cargar como solicitó el usuario
+            showShortlistOnly: false,
             currentPage: 1,
             itemsPerPage: 12
         };
@@ -1146,8 +1722,22 @@
         const typeFilterBtns = document.querySelectorAll("#typeFilters .pill");
         const licenseFilterBtns = document.querySelectorAll("#licenseFilters .pill");
 
+        const advancedFiltersBtn = document.getElementById("advancedFiltersBtn");
+        const filtersOverlay = document.getElementById("filtersOverlay");
+        const closeDrawerBtn = document.getElementById("closeDrawer");
+        const applyFiltersBtn = document.getElementById("applyFiltersBtn");
+        const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+        const genderBtns = document.querySelectorAll("#genderOptions .drawer-option-pill");
+        const ageBtns = document.querySelectorAll("#ageOptions .drawer-option-pill");
+        const regionBtns = document.querySelectorAll("#regionOptions .drawer-option-pill");
+
         const modalOverlay = document.getElementById("detailModal");
         const closeModalBtn = document.getElementById("closeModal");
+
+        const catalogBtn = document.getElementById("catalogBtn");
+        const shortlistViewBtn = document.getElementById("shortlistViewBtn");
+        const shortlistCountText = document.getElementById("shortlistCountText");
 
         /* === RENDER LOGIC === */
         function renderCards() {
@@ -1155,7 +1745,7 @@
             const filtered = MODELS.filter(model => {
                 if (!model.isPublic) return false;
 
-                if (state.showFavoritesOnly && !state.favorites.includes(model.id)) return false;
+                if (state.showShortlistOnly && !state.shortlist.includes(model.id)) return false;
 
                 // Search
                 const q = state.searchQuery.toLowerCase();
@@ -1164,13 +1754,26 @@
                     model.lastName.toLowerCase().includes(q) ||
                     model.id.toLowerCase().includes(q);
 
-                // Type (OR intra-category)
                 const matchesType = state.typeFilters.length === 0 || state.typeFilters.includes(model.type);
-
-                // License (OR intra-category)
                 const matchesLicense = state.licenseFilters.length === 0 || state.licenseFilters.includes(model.license);
 
-                return matchesSearch && matchesType && matchesLicense;
+                // Advanced Filters
+                const matchesGender = state.genderFilter === "all" || model.gender === state.genderFilter;
+                const matchesRegion = state.regionFilter === "all" || model.region === state.regionFilter;
+
+                let matchesAge = true;
+                if (state.ageRangeFilter !== "all") {
+                    const age = model.age;
+                    switch (state.ageRangeFilter) {
+                        case "teens": matchesAge = age < 20; break;
+                        case "20s": matchesAge = age >= 20 && age < 30; break;
+                        case "30s": matchesAge = age >= 30 && age < 40; break;
+                        case "40s": matchesAge = age >= 40 && age < 50; break;
+                        case "50+": matchesAge = age >= 50; break;
+                    }
+                }
+
+                return matchesSearch && matchesType && matchesLicense && matchesGender && matchesRegion && matchesAge;
             });
 
             // Grid UI
@@ -1202,14 +1805,16 @@
                 card.onclick = () => openModal(model);
 
                 let licBadgeText = model.license === "royalty-free" ? "Royalty Free" : "Available to License";
-                const isFav = state.favorites.includes(model.id);
+                const inShortlist = state.shortlist.includes(model.id);
+
+                const iconSvg = inShortlist
+                    ? `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+                    : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
 
                 card.innerHTML = `
                     <div class="card-image-wrap">
-                        <button class="fav-btn ${isFav ? 'active' : ''}" aria-label="Toggle Favorite" data-id="${model.id}">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
+                        <button class="fav-btn ${inShortlist ? 'active' : ''}" aria-label="Toggle Shortlist" data-id="${model.id}">
+                            ${iconSvg}
                         </button>
                         <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
                     </div>
@@ -1234,11 +1839,30 @@
                 const favBtn = card.querySelector('.fav-btn');
                 favBtn.onclick = (e) => {
                     e.stopPropagation();
-                    toggleFavorite(model.id);
+                    toggleShortlist(model.id);
                 };
 
                 gridEl.appendChild(card);
             });
+
+            // Update Header Counter
+            if (shortlistCountText) {
+                shortlistCountText.textContent = `Shortlist (${state.shortlist.length})`;
+            }
+
+            // Inject B2B CTA if in Shortlist view
+            if (state.showShortlistOnly && state.shortlist.length > 0) {
+                const ctaWrap = document.createElement("div");
+                ctaWrap.style.gridColumn = "1 / -1";
+                ctaWrap.style.textAlign = "center";
+                ctaWrap.style.padding = "40px 0";
+
+                const selectedIds = state.shortlist.join(", ");
+                const mailtoUrl = `mailto:sales@stoodio.ai?subject=Requesting%20Access%20to%20Shortlist&body=Hi%20Stoodio%20team,%0D%0A%0D%0AI'd%20like%20to%20request%20access%20to%20the%20following%20models:%0D%0A${selectedIds}%0D%0A%0D%0AThank%20you!`;
+
+                ctaWrap.innerHTML = `<a href="${mailtoUrl}" class="btn-primary" style="display:inline-block; width:auto;">Request Access to Selection</a>`;
+                gridEl.appendChild(ctaWrap);
+            }
 
             renderPagination(filtered.length);
         }
@@ -1351,6 +1975,65 @@
             });
         });
 
+        /* === ADVANCED FILTERS LOGIC === */
+        advancedFiltersBtn.addEventListener("click", () => {
+            filtersOverlay.classList.add("active");
+            document.body.style.overflow = "hidden";
+        });
+
+        const closeDrawer = () => {
+            filtersOverlay.classList.remove("active");
+            document.body.style.overflow = "";
+        };
+
+        closeDrawerBtn.addEventListener("click", closeDrawer);
+        filtersOverlay.addEventListener("click", (e) => {
+            if (e.target === filtersOverlay) closeDrawer();
+        });
+
+        const handleDrawerPillClick = (btns, stateKey) => {
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    state[stateKey] = btn.getAttribute(`data-${stateKey.replace('Filter', '')}`);
+                });
+            });
+        };
+
+        handleDrawerPillClick(genderBtns, "genderFilter");
+        handleDrawerPillClick(ageBtns, "ageRangeFilter");
+        handleDrawerPillClick(regionBtns, "regionFilter");
+
+        const resetAdvancedFiltersUI = () => {
+            state.genderFilter = "all";
+            state.ageRangeFilter = "all";
+            state.regionFilter = "all";
+
+            [genderBtns, ageBtns, regionBtns].forEach(group => {
+                group.forEach(btn => {
+                    btn.classList.remove("active");
+                    const val = btn.getAttribute("data-gender") || btn.getAttribute("data-age") || btn.getAttribute("data-region");
+                    if (val === "all") {
+                        btn.classList.add("active");
+                    }
+                });
+            });
+        };
+
+        applyFiltersBtn.addEventListener("click", () => {
+            state.currentPage = 1;
+            renderCards();
+            closeDrawer();
+        });
+
+        clearFiltersBtn.addEventListener("click", () => {
+            resetAdvancedFiltersUI();
+            state.currentPage = 1;
+            renderCards();
+            closeDrawer();
+        });
+
         /* === MODAL LOGIC === */
         function openModal(model) {
             document.body.style.overflow = "hidden"; // Prevent background scroll
@@ -1415,10 +2098,19 @@
                 galleryWrapper.style.display = "none";
             }
 
-            // Make request button compose an email prepopulated with model info
+            // Connect button to Shortlist logic
             const reqBtn = document.getElementById("requestModelBtn");
+            const updateBtnStatus = () => {
+                const isShortlisted = state.shortlist.includes(model.id);
+                reqBtn.textContent = isShortlisted ? "Remove from Shortlist" : "Add to Shortlist";
+                reqBtn.classList.toggle("btn-active", isShortlisted); // Optional: if we want a different style
+            };
+
+            updateBtnStatus();
+
             reqBtn.onclick = () => {
-                window.location.href = `mailto:sales@stoodio.ai?subject=Requesting Model ${model.id}&body=Hi team,%0D%0A%0D%0AI would like to request the model ${model.firstName} ${model.lastName} (${model.id}).%0D%0A%0D%0AThank you!`;
+                toggleShortlist(model.id);
+                updateBtnStatus();
             };
 
             // Show modal
@@ -1426,10 +2118,12 @@
 
             // Sync favorite state
             const mFavBtn = document.getElementById("modalFavBtn");
-            if (state.favorites.includes(model.id)) {
+            if (state.shortlist.includes(model.id)) {
                 mFavBtn.classList.add("active");
+                mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
             } else {
                 mFavBtn.classList.remove("active");
+                mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
             }
         }
 
@@ -1454,15 +2148,15 @@
             document.getElementById("modalGallery").scrollBy({ top: 120, behavior: 'smooth' });
         });
 
-        /* === FAVORITES LOGIC === */
-        function toggleFavorite(id) {
-            const index = state.favorites.indexOf(id);
+        /* === SHORTLIST LOGIC === */
+        function toggleShortlist(id) {
+            const index = state.shortlist.indexOf(id);
             if (index > -1) {
-                state.favorites.splice(index, 1);
+                state.shortlist.splice(index, 1);
             } else {
-                state.favorites.push(id);
+                state.shortlist.push(id);
             }
-            localStorage.setItem('stoodio_favorites', JSON.stringify(state.favorites));
+            localStorage.setItem('stoodio_shortlist', JSON.stringify(state.shortlist));
 
             // Sync UI
             renderCards();
@@ -1471,20 +2165,28 @@
             const modalIdEl = document.getElementById("modalId");
             if (modalOverlay.classList.contains("active") && modalIdEl && modalIdEl.textContent === id) {
                 const mFavBtn = document.getElementById("modalFavBtn");
-                if (state.favorites.includes(id)) {
+                const mReqBtn = document.getElementById("requestModelBtn");
+                const isShortlisted = state.shortlist.includes(id);
+
+                if (isShortlisted) {
                     mFavBtn.classList.add("active");
+                    mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    if (mReqBtn) mReqBtn.textContent = "Remove from Shortlist";
                 } else {
                     mFavBtn.classList.remove("active");
+                    mFavBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+                    if (mReqBtn) mReqBtn.textContent = "Add to Shortlist";
                 }
             }
         }
 
         function goHome() {
-            state.showFavoritesOnly = false;
+            state.showShortlistOnly = false;
             state.typeFilters = [];
             state.licenseFilters = [];
             state.searchQuery = "";
             state.currentPage = 1;
+            resetAdvancedFiltersUI();
 
             // Reset Search Input
             searchInput.value = "";
@@ -1497,40 +2199,45 @@
             licenseFilterBtns[0].classList.add("active");
 
             // Reset Header Nav UI
-            document.getElementById("homeMenuBtn").classList.add("active");
-            document.getElementById("favViewBtn").classList.remove("active");
+            if (catalogBtn) catalogBtn.classList.add("active");
+            if (shortlistViewBtn) shortlistViewBtn.classList.remove("active-view");
 
             renderCards();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.getElementById("logoLink").addEventListener("click", goHome);
-        document.getElementById("homeMenuBtn").addEventListener("click", goHome);
+        if (catalogBtn) catalogBtn.addEventListener("click", goHome);
 
-        document.getElementById("favViewBtn").addEventListener("click", (e) => {
-            state.showFavoritesOnly = true;
-            state.currentPage = 1;
+        if (shortlistViewBtn) {
+            shortlistViewBtn.addEventListener("click", (e) => {
+                state.showShortlistOnly = true;
+                state.currentPage = 1;
 
-            document.getElementById("homeMenuBtn").classList.remove("active");
-            document.getElementById("favViewBtn").classList.add("active");
+                if (catalogBtn) catalogBtn.classList.remove("active");
+                shortlistViewBtn.classList.add("active-view");
 
-            // Opcional: limpiar filtros al entrar a favoritos
-            state.typeFilters = [];
-            state.licenseFilters = [];
-            state.searchQuery = "";
-            searchInput.value = "";
-            typeFilterBtns.forEach(b => b.classList.remove("active"));
-            typeFilterBtns[0].classList.add("active");
-            licenseFilterBtns.forEach(b => b.classList.remove("active"));
-            licenseFilterBtns[0].classList.add("active");
+                // Clean filters
+                state.typeFilters = [];
+                state.licenseFilters = [];
+                state.searchQuery = "";
+                searchInput.value = "";
+                resetAdvancedFiltersUI();
 
-            renderCards();
-        });
+                typeFilterBtns.forEach(b => b.classList.remove("active"));
+                typeFilterBtns[0].classList.add("active");
+                licenseFilterBtns.forEach(b => b.classList.remove("active"));
+                licenseFilterBtns[0].classList.add("active");
+
+                renderCards();
+                window.scrollTo({ top: document.getElementById('showroom-grid').offsetTop - 120, behavior: 'smooth' });
+            });
+        }
 
         // Initialize modal favorite click loop
         document.getElementById("modalFavBtn").onclick = () => {
             const currentId = document.getElementById("modalId").textContent;
-            toggleFavorite(currentId);
+            toggleShortlist(currentId);
         };
 
         // Initialize
