@@ -2109,8 +2109,11 @@
                         <input type="email" id="clientEmail" placeholder="Client Name or Email Address" required 
                                style="width: 100%; padding: 14px 20px; border-radius: var(--radius-full); border: 1px solid var(--color-border); font-size: 15px;">
                         
-                        <textarea id="clientMessage" placeholder="Add a personal message (optional)" rows="3"
-                                  style="width: 100%; padding: 14px 20px; border-radius: 16px; border: 1px solid var(--color-border); font-size: 15px; font-family: inherit; resize: vertical;"></textarea>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <textarea id="clientMessage" placeholder="Add a personal message (optional) - max 25 words" rows="3"
+                                      style="width: 100%; padding: 14px 20px; border-radius: 16px; border: 1px solid var(--color-border); font-size: 15px; font-family: inherit; resize: vertical;"></textarea>
+                            <span id="wordCountWarning" style="color: #ef4444; font-size: 12px; display: none; padding-left: 8px;">Maximum 25 words allowed.</span>
+                        </div>
 
                         <button type="submit" class="btn-primary" style="width: 100%;">
                             Send Selection to Client
@@ -2128,6 +2131,26 @@
                 gridEl.appendChild(shareBlock);
 
                 const form = document.getElementById("shareShortlistForm");
+                const submitBtn = form.querySelector('button');
+                const clientMsgInput = document.getElementById("clientMessage");
+                const wordCountWarning = document.getElementById("wordCountWarning");
+
+                if (clientMsgInput) {
+                    clientMsgInput.addEventListener('input', (e) => {
+                        const text = e.target.value.trim();
+                        const words = text ? text.split(/\s+/) : [];
+                        if (words.length > 25) {
+                            wordCountWarning.style.display = "block";
+                            submitBtn.disabled = true;
+                            submitBtn.style.opacity = "0.5";
+                        } else {
+                            wordCountWarning.style.display = "none";
+                            submitBtn.disabled = false;
+                            submitBtn.style.opacity = "1";
+                        }
+                    });
+                }
+
                 form.onsubmit = (e) => {
                     e.preventDefault();
                     const email = document.getElementById("clientEmail").value;
@@ -2608,6 +2631,8 @@
             state.isReviewView = false;
             const controlsWrapper = document.querySelector(".controls-wrapper");
             if (controlsWrapper) controlsWrapper.style.display = "flex";
+            const headerRight = document.querySelector(".header-right");
+            if (headerRight) headerRight.style.display = "flex";
 
             state.showShortlistOnly = false;
             state.typeFilters = [];
@@ -2729,6 +2754,8 @@
                 state.isReviewView = true;
                 const controlsWrapper = document.querySelector(".controls-wrapper");
                 if (controlsWrapper) controlsWrapper.style.display = "none";
+                const headerRight = document.querySelector(".header-right");
+                if (headerRight) headerRight.style.display = "none";
 
                 // El equipo de Stoodio.ai recibe de vuelta la selección del Cliente
                 const clientEmail = params.get("client") || 'Client';
