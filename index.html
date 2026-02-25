@@ -1900,7 +1900,8 @@
             maxPrice: 1000,
             isAdmin: false,
             role: 'stoodio', // 'stoodio' o 'client'
-            isCuratedCatalog: false // Si es true, la BD se limita a lo enviado
+            isCuratedCatalog: false, // Si es true, la BD se limita a lo enviado
+            isReviewView: false // Si es true, oculta controles y form de share
         };
 
         // Cache del DOM
@@ -2076,7 +2077,7 @@
             }
 
             // Inject Integrated Sharing Tools if in Shortlist view
-            if (state.showShortlistOnly && state.shortlist.length > 0) {
+            if (state.showShortlistOnly && state.shortlist.length > 0 && !state.isReviewView) {
                 const shareBlock = document.createElement("div");
                 shareBlock.className = "share-section";
                 shareBlock.style.gridColumn = "1 / -1";
@@ -2595,6 +2596,10 @@
         }
 
         function goHome() {
+            state.isReviewView = false;
+            const controlsWrapper = document.querySelector(".controls-wrapper");
+            if (controlsWrapper) controlsWrapper.style.display = "flex";
+
             state.showShortlistOnly = false;
             state.typeFilters = [];
             state.licenseFilters = [];
@@ -2712,6 +2717,10 @@
             } else if (viewParam === "client-browse") {
                 state.role = 'client';
             } else if (viewParam === "stoodio-review") {
+                state.isReviewView = true;
+                const controlsWrapper = document.querySelector(".controls-wrapper");
+                if (controlsWrapper) controlsWrapper.style.display = "none";
+
                 // El equipo de Stoodio.ai recibe de vuelta la selección del Cliente
                 const clientEmail = params.get("client") || 'Client';
                 const clientMsg = params.get("msg");
