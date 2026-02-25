@@ -2026,11 +2026,18 @@
                         : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
                 }
 
-                card.innerHTML = `
-                    <div class="card-image-wrap">
+                let favBtnHtml = '';
+                if (!state.isReviewView) {
+                    favBtnHtml = `
                         <button class="fav-btn ${inShortlist ? 'active' : ''}" aria-label="Toggle Shortlist" data-id="${model.id}">
                             ${iconSvg}
                         </button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="card-image-wrap">
+                        ${favBtnHtml}
                         <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
                     </div>
                     <div class="card-info">
@@ -2052,10 +2059,12 @@
                 `;
 
                 const favBtn = card.querySelector('.fav-btn');
-                favBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    toggleShortlist(model.id, e.currentTarget);
-                };
+                if (favBtn) {
+                    favBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleShortlist(model.id, e.currentTarget);
+                    };
+                }
 
                 gridEl.appendChild(card);
             });
