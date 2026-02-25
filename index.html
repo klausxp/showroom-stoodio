@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -643,12 +643,12 @@
             stroke: #ef4444;
         }
 
-        [data-role="agency"] .fav-btn.active {
+        [data-role="stoodio"] .fav-btn.active {
             color: #10B981;
             /* Verde esmeralda */
         }
 
-        [data-role="agency"] .fav-btn.active svg {
+        [data-role="stoodio"] .fav-btn.active svg {
             fill: #10B981;
             stroke: #10B981;
         }
@@ -1899,7 +1899,7 @@
             itemsPerPage: 12,
             maxPrice: 1000,
             isAdmin: false,
-            role: 'agency', // 'agency' o 'client'
+            role: 'stoodio', // 'stoodio' o 'client'
             isCuratedCatalog: false // Si es true, la BD se limita a lo enviado
         };
 
@@ -2019,7 +2019,7 @@
                         ? `<svg width="16" height="16" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`
                         : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
                 } else {
-                    // Modo Agencia: Plus y Check
+                    // Modo Stoodio.ai: Plus y Check
                     iconSvg = inShortlist
                         ? `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`
                         : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
@@ -2129,18 +2129,18 @@
                     submitBtn.textContent = "Processing...";
 
                     // === GENERAR URL SEGÚN ROL Y MODO ===
-                    // URL 1 (Agencia → Cliente Curado):   ?view=client-curated&catalog=IDs
-                    // URL 2 (Agencia → Cliente Global):   ?view=client-browse
-                    // URL 3 (Cliente → Agencia Revisión): ?view=agency-review&picks=IDs
+                    // URL 1 (Stoodio.ai → Cliente Curado):   ?view=client-curated&catalog=IDs
+                    // URL 2 (Stoodio.ai → Cliente Global):   ?view=client-browse
+                    // URL 3 (Cliente → Stoodio.ai Revisión): ?view=stoodio-review&picks=IDs
                     const linkParams = new URLSearchParams();
 
-                    if (state.role === 'agency') {
-                        // Agencia crea catálogo curado para el Cliente
+                    if (state.role === 'stoodio') {
+                        // El equipo de Stoodio.ai crea catálogo curado para el Cliente
                         linkParams.set("view", "client-curated");
                         linkParams.set("catalog", state.shortlist.join(","));
                     } else {
-                        // Cliente devuelve su selección a la Agencia para revisión
-                        linkParams.set("view", "agency-review");
+                        // Cliente devuelve su selección a la Stoodio.ai para revisión
+                        linkParams.set("view", "stoodio-review");
                         if (state.isCuratedCatalog) {
                             // Referencia al catálogo original para contexto
                             const currentIds = originalModels.map(m => m.id);
@@ -2148,6 +2148,7 @@
                         }
                         linkParams.set("picks", state.shortlist.join(","));
                         if (email) linkParams.set("client", email);
+                        if (message) linkParams.set("msg", message);
                     }
 
                     const shareLinkBase = window.location.origin + window.location.pathname;
@@ -2165,7 +2166,7 @@
                         submitBtn.style.background = "#059669";
 
                         // Simular log de envío de email
-                        console.group("📧 Email Sent to Client / Agency");
+                        console.group("📧 Email Sent to Client / Stoodio.ai");
                         console.log("To:", email);
                         console.log("Message:", message || "(No personal message appended)");
                         console.log("Link:", shareLink);
@@ -2667,7 +2668,7 @@
             if (state.maxPrice < 1000) params.set("maxPrice", state.maxPrice);
 
             // === URLs DESCRIPTIVAS POR ROL Y MODO ===
-            // URL 1: Agency browsing full catalog (default, sin parámetro extra)
+            // URL 1: Stoodio.ai browsing full catalog (default, sin parámetro extra)
             // URL 2: Client browsing a curated catalog  --> ?view=client-curated&catalog=ID1,ID2
             // URL 3: Client browsing full catalog       --> ?view=client-browse
 
@@ -2680,7 +2681,7 @@
                     params.set("view", "client-browse");
                 }
             }
-            // La agencia (agency) es el default: no añadimos parámetro view
+            // La Stoodio.ai (stoodio) es el default: no añadimos parámetro view
 
             if (state.showShortlistOnly && state.shortlist.length > 0) {
                 params.set("picks", state.shortlist.join(","));
@@ -2710,17 +2711,49 @@
                 state.isCuratedCatalog = true;
             } else if (viewParam === "client-browse") {
                 state.role = 'client';
-            } else if (viewParam === "agency-review") {
-                // La Agencia recibe de vuelta la selección del Cliente
-                const clientEmail = params.get("client");
-                const headingEl = document.querySelector(".hero h1");
-                const subtitleEl = document.querySelector(".hero p");
+            } else if (viewParam === "stoodio-review") {
+                // El equipo de Stoodio.ai recibe de vuelta la selección del Cliente
+                const clientEmail = params.get("client") || 'Client';
+                const clientMsg = params.get("msg");
 
-                if (headingEl) {
-                    headingEl.textContent = clientEmail ? `Selection from ${clientEmail}` : "Client Selection";
-                }
-                if (subtitleEl) {
-                    subtitleEl.textContent = "Review the models pre-selected by your client.";
+                const heroInner = document.querySelector(".hero-inner");
+                if (heroInner) {
+                    const messageHtml = clientMsg ? (
+                        '<div style="position: relative; padding-left: 20px; border-left: 2px solid var(--color-accent);">' +
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-border)" style="position: absolute; top: -12px; left: -14px; opacity: 0.6; z-index: 0;"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>' +
+                        '<p style="position: relative; z-index: 1; font-family: var(--font-heading); font-size: 22px; font-style: italic; font-weight: 400; color: var(--color-text); line-height: 1.5; margin: 0;">' +
+                        '"' + clientMsg.replace(/\n/g, '<br>') + '"' +
+                        '</p>' +
+                        '</div>'
+                    ) : '';
+
+                    const marginBtm = clientMsg ? '32px' : '0';
+
+                    heroInner.innerHTML = `
+                        <div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; align-items: stretch; margin-top: 16px;">
+                            <div style="flex: 1; min-width: 300px; max-width: 600px; display: flex; flex-direction: column; justify-content: center;">
+                                <h1 style="font-family: var(--font-body); font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--color-text); margin-bottom: 24px; white-space: normal;">
+                                    Client Selection<br>Review
+                                </h1>
+                                <p style="font-size: 18px; font-weight: 300; letter-spacing: 0.01em; color: var(--color-text-light); line-height: 1.6; margin: 0; max-width: 480px;">
+                                    The following models have been pre-selected by your client. Please review the selection below to proceed with the requested talent.
+                                </p>
+                            </div>
+                            
+                            <div style="flex: 1; min-width: 320px; max-width: 500px; background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: 20px; padding: 32px 40px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 12px 24px -12px rgba(0,0,0,0.05);">
+                                <div style="font-family: var(--font-body); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-meta); margin-bottom: 8px;">
+                                    Sent By
+                                </div>
+                                <div style="font-family: var(--font-body); font-size: 18px; font-weight: 600; color: var(--color-text); margin-bottom: ${marginBtm}; line-height: 1.4;">
+                                    ${clientEmail}
+                                </div>
+                                ${messageHtml}
+                            </div>
+                        </div>
+                    `;
+                    heroInner.style.borderBottom = 'none';
+                    heroInner.style.paddingBottom = '0';
+                    heroInner.style.marginBottom = '20px';
                 }
             } else if (roleParam === 'client') {
                 // Retrocompatibilidad con el parámetro antiguo
