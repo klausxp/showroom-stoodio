@@ -1942,8 +1942,7 @@
             // Toggle Custom Models visibility
             const customModelsSection = document.getElementById("custom-models");
             if (customModelsSection) {
-                const hideCustomModels = state.showShortlistOnly || (state.role === 'client' && state.isCuratedCatalog);
-                customModelsSection.style.display = hideCustomModels ? "none" : "block";
+                customModelsSection.style.display = state.showShortlistOnly ? "none" : "block";
             }
 
             // --- VISTA DE CARPETAS (Para URLs catalog folder) ---
