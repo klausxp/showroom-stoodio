@@ -1955,12 +1955,15 @@
 
             // Toggle Header Pre-selection Button Visibility
             const headerBtn = document.getElementById("shortlistViewBtn");
+            const navCenter = document.querySelector(".header-nav-center");
             if (headerBtn) {
                 // Ocultar si es cliente curado y NO está dentro de una carpeta
                 if (state.role === 'client' && state.isCuratedCatalog && !state.activeFolder && !state.showShortlistOnly) {
                     headerBtn.style.display = "none";
+                    if (navCenter) navCenter.style.display = "none";
                 } else {
                     headerBtn.style.display = "flex";
+                    if (navCenter) navCenter.style.display = ""; // Vuelve al comportamiento CSS (flex/none por media query)
                 }
             }
 
@@ -2006,7 +2009,7 @@
                         <div style="position: absolute; inset: 0; background-image: url('${coverUrl}'); background-size: cover; background-position: center; transition: transform 0.3s ease;"></div>
                         <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%);"></div>
                         <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px;">
-                            <h3 style="color: white; font-family: var(--font-body); font-weight: 600; font-size: 26px; letter-spacing: -0.02em; margin-bottom: 6px;">${folderName}</h3>
+                            <h3 style="color: white; font-family: var(--font-body); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; margin-bottom: 6px;">${folderName}</h3>
                             <span style="color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">${count} Model${count !== 1 ? 's' : ''} &rarr;</span>
                         </div>
                     `;
