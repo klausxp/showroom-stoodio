@@ -1946,13 +1946,19 @@
             }
 
             // --- VISTA DE CARPETAS (Para URLs catalog folder) ---
-            if (state.role === 'client' && state.folders && Object.keys(state.folders).length > 0 && !state.activeFolder && !state.showShortlistOnly) {
+            const isFolderView = state.role === 'client' && state.folders && Object.keys(state.folders).length > 0 && !state.activeFolder && !state.showShortlistOnly;
+            if (isFolderView) {
+                // Ocultar controles de filtro en vista de carpetas
+                const controlsWrapper = document.querySelector(".controls-wrapper");
+                if (controlsWrapper) controlsWrapper.style.display = "none";
+                if (customModelsSection) customModelsSection.style.display = "none";
+
                 // Dibujamos las grandes tarjetas representativas de las carpetas
                 gridEl.innerHTML = "";
 
                 const foldersContainer = document.createElement("div");
                 foldersContainer.style.display = "grid";
-                foldersContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(300px, 1fr))";
+                foldersContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(320px, 1fr))";
                 foldersContainer.style.gap = "24px";
                 foldersContainer.style.width = "100%";
 
@@ -1969,6 +1975,8 @@
                     folderCard.style.cursor = "pointer";
                     folderCard.style.position = "relative";
                     folderCard.style.overflow = "hidden";
+                    folderCard.style.minHeight = "420px";
+                    folderCard.style.aspectRatio = "3/4";
                     folderCard.onclick = () => {
                         state.activeFolder = folderName;
                         renderCards(); // Re-renderizará mostrando fotos
