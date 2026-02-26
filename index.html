@@ -1540,6 +1540,7 @@
                         <button class="pill active" data-filter="all">All</button>
                         <button class="pill" data-filter="Digital Twin">Digital Twins</button>
                         <button class="pill" data-filter="Avatar">Avatars</button>
+                        <button class="pill" data-filter="Real Model">Real Models</button>
                     </div>
                 </div>
 
@@ -1860,6 +1861,8 @@
         const MODELS = [
             { id: "ST-001", firstName: "Sofia", lastName: "Reyes", type: "Avatar", gender: "Female", age: 24, country: "Spain", countryCode: "es", region: "Europe", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
             { id: "ST-002", firstName: "Marcus", lastName: "Chen", type: "Digital Twin", gender: "Male", age: 28, country: "China", countryCode: "cn", region: "Asia Pacific", license: "paid", price: 299, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "RM-001", firstName: "Martina", lastName: "Gomez", type: "Real Model", gender: "Female", age: 21, country: "Argentina", countryCode: "ar", region: "Latin America", license: "paid", price: 800, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
+            { id: "RM-002", firstName: "Hugo", lastName: "Silva", type: "Real Model", gender: "Male", age: 25, country: "Spain", countryCode: "es", region: "Europe", license: "paid", price: 750, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
             { id: "ST-003", firstName: "Elena", lastName: "Vassiliev", type: "Avatar", gender: "Female", age: 26, country: "Russia", countryCode: "ru", region: "Europe", license: "paid", price: 499, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
             { id: "ST-004", firstName: "David", lastName: "Okafor", type: "Digital Twin", gender: "Male", age: 31, country: "Nigeria", countryCode: "ng", region: "Middle East & Africa", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
             { id: "ST-005", firstName: "Yuri", lastName: "Kato", type: "Avatar", gender: "Female", age: 22, country: "Japan", countryCode: "jp", region: "Asia Pacific", license: "royalty-free", price: null, currency: "USD", coverPhoto: "https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=800&q=80", portfolioPhotos: ["https://images.unsplash.com/photo-1513207565459-d7f36bfa1222?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1550927407-50e2bd128b81?auto=format&fit=crop&w=1200&q=80"], isPublic: true },
@@ -1901,7 +1904,9 @@
             isAdmin: false,
             role: 'stoodio', // 'stoodio' o 'client'
             isCuratedCatalog: false, // Si es true, la BD se limita a lo enviado
-            isReviewView: false // Si es true, oculta controles y form de share
+            isReviewView: false, // Si es true, oculta controles y form de share
+            folders: null, // Guardará la estructura de carpetas si viene por URL (ej: { "Female": ["ST-001"], "Male": ["ST-002"] })
+            activeFolder: null // La carpeta que el cliente está viendo en ese momento
         };
 
         // Cache del DOM
@@ -1940,11 +1945,80 @@
                 customModelsSection.style.display = state.showShortlistOnly ? "none" : "block";
             }
 
+            // --- VISTA DE CARPETAS (Para URLs catalog folder) ---
+            if (state.role === 'client' && state.folders && Object.keys(state.folders).length > 0 && !state.activeFolder && !state.showShortlistOnly) {
+                // Dibujamos las grandes tarjetas representativas de las carpetas
+                gridEl.innerHTML = "";
+
+                const foldersContainer = document.createElement("div");
+                foldersContainer.style.display = "grid";
+                foldersContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(300px, 1fr))";
+                foldersContainer.style.gap = "24px";
+                foldersContainer.style.width = "100%";
+
+                Object.keys(state.folders).forEach(folderName => {
+                    const idsInFolder = state.folders[folderName];
+                    const count = idsInFolder.length;
+
+                    // Buscar la primera imagen de la carpeta para usarla de cover
+                    const firstModel = MODELS.find(m => idsInFolder.includes(m.id));
+                    const coverUrl = firstModel ? firstModel.coverPhoto : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80';
+
+                    const folderCard = document.createElement("div");
+                    folderCard.className = "card folder-card";
+                    folderCard.style.cursor = "pointer";
+                    folderCard.style.position = "relative";
+                    folderCard.style.overflow = "hidden";
+                    folderCard.onclick = () => {
+                        state.activeFolder = folderName;
+                        renderCards(); // Re-renderizará mostrando fotos
+                    };
+
+                    folderCard.innerHTML = `
+                        <div style="position: absolute; inset: 0; background-image: url('${coverUrl}'); background-size: cover; background-position: center; transition: transform 0.3s ease;"></div>
+                        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%);"></div>
+                        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px;">
+                            <h3 style="color: white; font-family: var(--font-heading); font-size: 32px; margin-bottom: 8px;">${folderName}</h3>
+                            <span style="color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">${count} Model${count !== 1 ? 's' : ''} &rarr;</span>
+                        </div>
+                    `;
+
+                    // Hover effect
+                    folderCard.addEventListener('mouseenter', () => { folderCard.children[0].style.transform = 'scale(1.05)'; });
+                    folderCard.addEventListener('mouseleave', () => { folderCard.children[0].style.transform = 'scale(1)'; });
+
+                    foldersContainer.appendChild(folderCard);
+                });
+
+                gridEl.appendChild(foldersContainer);
+                renderPagination(0); // Ocultar paginacion
+                return;
+            }
+
+            // Botón de Volver a Carpetas
+            let backButtonHtml = '';
+            if (state.role === 'client' && state.folders && state.activeFolder) {
+                backButtonHtml = `
+                    <div style="width: 100%; margin-bottom: 24px;">
+                        <button onclick="state.activeFolder = null; renderCards();" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-border); padding: 8px 16px; border-radius: 20px; background: var(--color-surface); cursor: pointer;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            Back to Categories
+                        </button>
+                        <h2 style="font-family: var(--font-heading); font-size: 28px; margin-top: 16px;">${state.activeFolder}</h2>
+                    </div>
+                `;
+            }
+
             // Filter
-            const filtered = MODELS.filter(model => {
+            const filtered = originalModels.filter(model => {
                 if (!model.isPublic) return false;
 
                 if (state.showShortlistOnly && !state.shortlist.includes(model.id)) return false;
+
+                // Si estamos en una carpeta específica, solo mostrar esos
+                if (state.activeFolder && state.folders[state.activeFolder]) {
+                    if (!state.folders[state.activeFolder].includes(model.id)) return false;
+                }
 
                 // Search
                 const q = state.searchQuery.toLowerCase();
@@ -1983,8 +2057,8 @@
             filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
 
             // Grid UI
-            gridEl.innerHTML = "";
-            if (filtered.length === 0) {
+            gridEl.innerHTML = backButtonHtml;
+            if (filtered.length === 0 && !backButtonHtml) {
                 gridEl.innerHTML = `
                     <div class="empty-state">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2035,9 +2109,15 @@
                     `;
                 }
 
+                let consentBadge = '';
+                if (model.type === "Real Model" && state.role !== 'client') {
+                    consentBadge = `<div style="position: absolute; bottom: 16px; left: 16px; background-color: #f59e0b; color: #fff; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 4px; z-index: 10; font-family: var(--font-body); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">NO CONSENT YET</div>`;
+                }
+
                 card.innerHTML = `
                     <div class="card-image-wrap">
                         ${favBtnHtml}
+                        ${consentBadge}
                         <img src="${model.coverPhoto}" alt="${model.firstName}" class="card-image" loading="lazy" width="300" height="400">
                     </div>
                     <div class="card-info">
@@ -2071,7 +2151,7 @@
 
             // Update Header Counter and Text
             if (shortlistCountText) {
-                const label = state.role === 'client' ? "My Selection" : "Shortlist";
+                const label = state.role === 'client' ? "My Pre-selection" : "Shortlist";
                 shortlistCountText.textContent = `${label} (${state.shortlist.length})`;
 
                 // Update header icon if client
@@ -2102,8 +2182,8 @@
 
                 shareBlock.innerHTML = `
                     <div style="text-align:center;">
-                        <h3 style="font-size: 24px; margin-bottom: 8px;">Share Selection</h3>
-                        <p style="color: var(--color-text-meta); font-size: 14px;">Send this selection directly to a client's email.</p>
+                        <h3 style="font-size: 24px; margin-bottom: 8px;">Send Pre-selection</h3>
+                        <p style="color: var(--color-text-meta); font-size: 14px;">Send this pre-selection directly to a client's email.</p>
                     </div>
                     <form id="shareShortlistForm" style="width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 16px;">
                         <input type="email" id="clientEmail" placeholder="Client Name or Email Address" required 
@@ -2115,8 +2195,15 @@
                             <span id="wordCountWarning" style="color: #ef4444; font-size: 12px; display: none; padding-left: 8px;">Maximum 25 words allowed.</span>
                         </div>
 
+                        ${state.role === 'stoodio' ? `
+                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px;">
+                            <input type="checkbox" id="groupByGender" style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="groupByGender" style="font-size: 14px; cursor: pointer; user-select: none;">Group by Gender (Create folders for client)</label>
+                        </div>
+                        ` : ''}
+
                         <button type="submit" class="btn-primary" style="width: 100%;">
-                            Send Selection to Client
+                            Send Pre-selection
                         </button>
                     </form>
                     <div id="shareStatusMessage" style="font-size: 14px; font-weight: 500; display: none; text-align: center;"></div>
@@ -2162,7 +2249,7 @@
                     submitBtn.textContent = "Processing...";
 
                     // === GENERAR URL SEGÚN ROL Y MODO ===
-                    // URL 1 (Stoodio.ai → Cliente Curado):   ?view=client-curated&catalog=IDs
+                    // URL 1 (Stoodio.ai → Cliente Curado):   ?view=client-curated&catalog=IDs&folders=group1:id1,id2|group2:id3
                     // URL 2 (Stoodio.ai → Cliente Global):   ?view=client-browse
                     // URL 3 (Cliente → Stoodio.ai Revisión): ?view=stoodio-review&picks=IDs
                     const linkParams = new URLSearchParams();
@@ -2171,6 +2258,25 @@
                         // El equipo de Stoodio.ai crea catálogo curado para el Cliente
                         linkParams.set("view", "client-curated");
                         linkParams.set("catalog", state.shortlist.join(","));
+
+                        // Lógica de Agrupación de Carpetas
+                        const groupByGenderCheckbox = document.getElementById("groupByGender");
+                        if (groupByGenderCheckbox && groupByGenderCheckbox.checked) {
+                            const shortlistedModels = MODELS.filter(m => state.shortlist.includes(m.id));
+                            const females = shortlistedModels.filter(m => m.gender === 'Female').map(m => m.id);
+                            const males = shortlistedModels.filter(m => m.gender === 'Male').map(m => m.id);
+                            const others = shortlistedModels.filter(m => m.gender !== 'Female' && m.gender !== 'Male').map(m => m.id);
+
+                            let folderString = [];
+                            if (females.length > 0) folderString.push(`Female:${females.join(",")}`);
+                            if (males.length > 0) folderString.push(`Male:${males.join(",")}`);
+                            if (others.length > 0) folderString.push(`Other:${others.join(",")}`);
+
+                            if (folderString.length > 0) {
+                                linkParams.set("folders", folderString.join("|"));
+                            }
+                        }
+
                     } else {
                         // Cliente devuelve su selección a la Stoodio.ai para revisión
                         linkParams.set("view", "stoodio-review");
@@ -2193,7 +2299,7 @@
                         form.style.display = "none"; // Ocultar formulario al éxito
                         statusMsg.style.display = "block";
                         statusMsg.style.color = "#059669";
-                        statusMsg.textContent = `✓ Selection successfully sent to ${email}`;
+                        statusMsg.textContent = `✓ Pre-selection successfully sent to ${email}`;
 
                         submitBtn.textContent = "Sent!";
                         submitBtn.style.background = "#059669";
@@ -2230,7 +2336,7 @@
                         setTimeout(() => {
                             statusMsg.style.display = "none";
                             submitBtn.disabled = false;
-                            submitBtn.textContent = "Send Selection to Client";
+                            submitBtn.textContent = "Send Pre-selection";
                             submitBtn.style.background = "var(--color-accent)";
                             // Limpiar campos
                             document.getElementById("clientEmail").value = "";
@@ -2811,6 +2917,18 @@
                 originalModels = originalModels.filter(m => catalogIds.includes(m.id));
                 filteredModels = [...originalModels];
                 state.isCuratedCatalog = true;
+
+                // Parse folders if present e.g folders=Female:ID1,ID2|Male:ID3
+                if (params.has("folders")) {
+                    const foldersStr = params.get("folders");
+                    state.folders = {};
+                    foldersStr.split("|").forEach(fGroup => {
+                        const [fName, fIds] = fGroup.split(":");
+                        if (fName && fIds) {
+                            state.folders[fName] = fIds.split(",");
+                        }
+                    });
+                }
             }
 
             if (params.has("gender")) state.genderFilter = params.get("gender");
