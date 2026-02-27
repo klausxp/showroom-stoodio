@@ -1958,13 +1958,15 @@
             const headerBtn = document.getElementById("shortlistViewBtn");
             const navCenter = document.querySelector(".header-nav-center");
             if (headerBtn) {
-                // Ocultar si es cliente curado y NO está dentro de una carpeta
-                if (state.role === 'client' && state.isCuratedCatalog && !state.activeFolder && !state.showShortlistOnly) {
+                // Ocultar SOLO si es cliente curado Y tiene carpetas Y está en la raíz de carpetas (no hya activeFolder)
+                const isAtFolderRoot = state.role === 'client' && state.isCuratedCatalog && state.folders && !state.activeFolder && !state.showShortlistOnly;
+
+                if (isAtFolderRoot) {
                     headerBtn.style.display = "none";
                     if (navCenter) navCenter.style.display = "none";
                 } else {
                     headerBtn.style.display = "flex";
-                    if (navCenter) navCenter.style.display = ""; // Vuelve al comportamiento CSS (flex/none por media query)
+                    if (navCenter) navCenter.style.display = ""; // Vuelve al comportamiento CSS
                 }
             }
 
@@ -2243,7 +2245,6 @@
                 const submitBtn = form.querySelector('button');
                 const clientMsgInput = document.getElementById("clientMessage");
                 const wordCountWarning = document.getElementById("wordCountWarning");
-
                 if (clientMsgInput) {
                     clientMsgInput.addEventListener('input', (e) => {
                         const text = e.target.value.trim();
@@ -2260,6 +2261,7 @@
                     });
                 }
 
+                // Asegurar que el formulario capture bien el mensaje y lo pase a la URL
                 form.onsubmit = (e) => {
                     e.preventDefault();
                     const email = document.getElementById("clientEmail").value;
@@ -2882,8 +2884,9 @@
                 state.isReviewView = true;
                 const controlsWrapper = document.querySelector(".controls-wrapper");
                 if (controlsWrapper) controlsWrapper.style.display = "none";
-                const headerRight = document.querySelector(".header-right");
-                if (headerRight) headerRight.style.display = "none";
+
+                // No ocultamos header-right por completo para mantener la navegación visible
+                // Pero podemos ocultar elementos específicos si fuera necesario más adelante.
 
                 // El equipo de Stoodio.ai recibe de vuelta la selección del Cliente
                 const clientEmail = params.get("client") || 'Client';
