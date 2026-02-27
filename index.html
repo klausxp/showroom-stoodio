@@ -1972,7 +1972,7 @@
             // --- VISTA DE CARPETAS (Para URLs catalog folder) ---
             const isFolderView = state.role === 'client' && state.folders && Object.keys(state.folders).length > 0 && !state.activeFolder && !state.showShortlistOnly;
             if (isFolderView) {
-                // Ocultar controles de filtro en vista de carpetas
+                // Ocultar controles de filtro COMPLETAMENTE en vista de RAÍZ de carpetas
                 const controlsWrapper = document.querySelector(".controls-wrapper");
                 if (controlsWrapper) controlsWrapper.style.display = "none";
                 if (customModelsSection) customModelsSection.style.display = "none";
@@ -2028,16 +2028,43 @@
                 return;
             }
 
-            // Botón de Volver a Carpetas
+            // --- VISTA DENTRO DE UNA CARPETA ---
+            const controlsWrapper = document.querySelector(".controls-wrapper");
+            const typeFilterContainer = document.querySelector('.filter-category:has(#typeFilters)');
+            const genderDrawerSection = document.querySelector('.drawer-section:has(#genderOptions)');
+
+            if (state.activeFolder) {
+                // Restaurar filtros cuando estamos DENTRO de una carpeta
+                if (controlsWrapper) controlsWrapper.style.display = "flex";
+
+                // Ocultar filtro de género (Subject) si es redundante (Female/Male)
+                const isGenderFolder = ["Female", "Male"].includes(state.activeFolder);
+                if (isGenderFolder) {
+                    if (typeFilterContainer) typeFilterContainer.style.display = "none";
+                    if (genderDrawerSection) genderDrawerSection.style.display = "none";
+                } else {
+                    if (typeFilterContainer) typeFilterContainer.style.display = "block";
+                    if (genderDrawerSection) genderDrawerSection.style.display = "block";
+                }
+            } else if (!isFolderView) {
+                // Asegurar que los filtros se vean en vista normal (browse/curated grid)
+                if (controlsWrapper) controlsWrapper.style.display = "flex";
+                if (typeFilterContainer) typeFilterContainer.style.display = "block";
+                if (genderDrawerSection) genderDrawerSection.style.display = "block";
+            }
+
+            // Botón de Volver a Carpetas y Título
             let backButtonHtml = '';
             if (state.role === 'client' && state.folders && state.activeFolder) {
                 backButtonHtml = `
-                    <div style="grid-column: 1 / -1; margin-bottom: 24px;">
-                        <button class="back-folders-btn" onclick="state.activeFolder = null; renderCards();" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-border); padding: 8px 16px; border-radius: 20px; background: var(--color-surface); cursor: pointer; transition: all 0.2s ease;">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                            Back to Categories
-                        </button>
-                        <h2 style="font-family: var(--font-heading); font-size: 32px; margin-top: 24px; margin-bottom: 0px;">${state.activeFolder}</h2>
+                    <div style="grid-column: 1 / -1; margin-bottom: 32px; display: flex; flex-direction: column; gap: 16px;">
+                        <div>
+                            <button class="back-folders-btn" onclick="state.activeFolder = null; renderCards();" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-border); padding: 8px 16px; border-radius: 20px; background: var(--color-surface); cursor: pointer; transition: all 0.2s ease;">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                Back to Categories
+                            </button>
+                        </div>
+                        <h2 style="font-family: var(--font-body); font-size: 42px; font-weight: 700; color: var(--color-text); margin: 0; letter-spacing: -0.02em;">${state.activeFolder}</h2>
                     </div>
                 `;
             }
