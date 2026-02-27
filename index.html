@@ -2056,10 +2056,10 @@
             let backButtonHtml = '';
             if (state.role === 'client' && state.folders && state.activeFolder) {
                 backButtonHtml = `
-                    <div style="grid-column: 1 / -1; margin-bottom: 48px; border-bottom: 1px solid var(--color-border); padding-bottom: 32px;">
-                        <h2 style="font-family: var(--font-body); font-size: 48px; font-weight: 700; color: var(--color-text); margin: 0; letter-spacing: -0.03em; display: flex; align-items: center; gap: 16px;">
+                    <div style="grid-column: 1 / -1; margin-bottom: 32px; padding-bottom: 0;">
+                        <h2 style="font-family: var(--font-body); font-size: 28px; font-weight: 600; color: var(--color-text); margin: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 12px;">
                             <span onclick="state.activeFolder = null; renderCards();" style="cursor: pointer; display: inline-flex; align-items: center; transition: transform 0.2s ease; color: var(--color-text-meta);" onmouseover="this.style.color='var(--color-text)'; this.style.transform='translateX(-4px)'" onmouseout="this.style.color='var(--color-text-meta)'; this.style.transform='translateX(0)'">
-                                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                             </span>
                             ${state.activeFolder}
                         </h2>
