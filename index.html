@@ -2037,8 +2037,8 @@
                 // Restaurar filtros cuando estamos DENTRO de una carpeta
                 if (controlsWrapper) controlsWrapper.style.display = "flex";
 
-                // NUNCA ocultar Subject (typeFilterContainer), el usuario lo quiere ver.
-                if (typeFilterContainer) typeFilterContainer.style.display = "block";
+                // NUNCA ocultar Subject (typeFilterContainer), el usuario lo quiere ver. Use flex para alinear.
+                if (typeFilterContainer) typeFilterContainer.style.display = "flex";
 
                 // Ocultar SOLO el género en el drawer si es una carpeta de género
                 const isGenderFolder = ["Female", "Male"].includes(state.activeFolder);
@@ -2048,7 +2048,7 @@
             } else if (!isFolderView) {
                 // Asegurar que los filtros se vean en vista normal (browse/curated grid)
                 if (controlsWrapper) controlsWrapper.style.display = "flex";
-                if (typeFilterContainer) typeFilterContainer.style.display = "block";
+                if (typeFilterContainer) typeFilterContainer.style.display = "flex";
                 if (genderDrawerSection) genderDrawerSection.style.display = "block";
             }
 
@@ -2056,14 +2056,13 @@
             let backButtonHtml = '';
             if (state.role === 'client' && state.folders && state.activeFolder) {
                 backButtonHtml = `
-                    <div style="grid-column: 1 / -1; margin-bottom: 32px; display: flex; flex-direction: column; gap: 16px;">
-                        <div>
-                            <button class="back-folders-btn" onclick="state.activeFolder = null; renderCards();" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-border); padding: 8px 16px; border-radius: 20px; background: var(--color-surface); cursor: pointer; transition: all 0.2s ease;">
-                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                                Back to Categories
-                            </button>
-                        </div>
-                        <h2 style="font-family: var(--font-body); font-size: 42px; font-weight: 700; color: var(--color-text); margin: 0; letter-spacing: -0.02em;">${state.activeFolder}</h2>
+                    <div style="grid-column: 1 / -1; margin-bottom: 48px; border-bottom: 1px solid var(--color-border); padding-bottom: 32px;">
+                        <h2 style="font-family: var(--font-body); font-size: 48px; font-weight: 700; color: var(--color-text); margin: 0; letter-spacing: -0.03em; display: flex; align-items: center; gap: 16px;">
+                            <span onclick="state.activeFolder = null; renderCards();" style="cursor: pointer; display: inline-flex; align-items: center; transition: transform 0.2s ease; color: var(--color-text-meta);" onmouseover="this.style.color='var(--color-text)'; this.style.transform='translateX(-4px)'" onmouseout="this.style.color='var(--color-text-meta)'; this.style.transform='translateX(0)'">
+                                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            </span>
+                            ${state.activeFolder}
+                        </h2>
                     </div>
                 `;
             }
