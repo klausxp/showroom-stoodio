@@ -2037,14 +2037,13 @@
                 // Restaurar filtros cuando estamos DENTRO de una carpeta
                 if (controlsWrapper) controlsWrapper.style.display = "flex";
 
-                // Ocultar filtro de género (Subject) si es redundante (Female/Male)
+                // NUNCA ocultar Subject (typeFilterContainer), el usuario lo quiere ver.
+                if (typeFilterContainer) typeFilterContainer.style.display = "block";
+
+                // Ocultar SOLO el género en el drawer si es una carpeta de género
                 const isGenderFolder = ["Female", "Male"].includes(state.activeFolder);
-                if (isGenderFolder) {
-                    if (typeFilterContainer) typeFilterContainer.style.display = "none";
-                    if (genderDrawerSection) genderDrawerSection.style.display = "none";
-                } else {
-                    if (typeFilterContainer) typeFilterContainer.style.display = "block";
-                    if (genderDrawerSection) genderDrawerSection.style.display = "block";
+                if (genderDrawerSection) {
+                    genderDrawerSection.style.display = isGenderFolder ? "none" : "block";
                 }
             } else if (!isFolderView) {
                 // Asegurar que los filtros se vean en vista normal (browse/curated grid)
